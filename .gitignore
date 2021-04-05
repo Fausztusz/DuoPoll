@@ -1,0 +1,12 @@
+.idea/
+*.db
+.vscode/
+.vs/
+*.sublime-project
+*.sublime-workspace
+
+bin/
+obj/
+/packages/
+riderModule.iml
+/_ReSharper.Caches/

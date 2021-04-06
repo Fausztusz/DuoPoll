@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IHateThisSh_t", "IHateThisSh_t\IHateThisSh_t.csproj", "{E5137DBC-703A-4094-ABB6-F7126C61EF2E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IHateThisSh_t.Web", "IHateThisSh_t.Web\IHateThisSh_t.Web.csproj", "{E5137DBC-703A-4094-ABB6-F7126C61EF2E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IHateThisSh_t.Dal", "IHateThisSh_t.Dal\IHateThisSh_t.Dal.csproj", "{8B0C694B-DF17-4C4D-8AA4-A14848C625BE}"
 EndProject

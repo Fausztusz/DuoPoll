@@ -62,6 +62,7 @@ namespace IHateThisSh_t.MVC
             app.UseAuthentication();
             app.UseAuthorization();
 
+
             app = Web.Route(app);
 
         }

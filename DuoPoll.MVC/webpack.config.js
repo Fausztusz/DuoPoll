@@ -8,6 +8,12 @@ module.exports = {
         path: path.resolve(__dirname, "./wwwroot/js/"),
         filename: "app.js",
     },
+    resolve: {
+        alias: {
+            'vue$': 'vue/dist/vue.esm.js'
+        },
+        extensions: ['*', '.js', '.vue', '.json']
+    },
     module: {
         rules: [
             {
@@ -31,40 +37,4 @@ module.exports = {
             }
         ]
     },
-    plugins: [
-        // make sure to include the plugin for the magic
-        new VueLoaderPlugin(),
-    ]
 }
-
-/*
-module.exports = {
-    mode: process.env.NODE_ENV,
-    entry: path.resolve(__dirname, './Resources/css/app.css'),
-    output: {
-        path: path.resolve(__dirname, "./wwwroot/css/"),
-        filename: "app.css",
-    },
-    module: {
-        rules: [
-            {
-                // ...
-                use: [
-                    // ...
-                    {
-                        loader: 'postcss-loader',
-                        options: {
-                            postcssOptions: {
-                                ident: 'postcss',
-                                plugins: [
-                                    require('tailwindcss'),
-                                    require('autoprefixer'),
-                                ],
-                            },
-                        }
-                    },
-                ],
-            }
-        ],
-    }
-} */

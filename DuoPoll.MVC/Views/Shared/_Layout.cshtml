@@ -1,50 +1,90 @@
-﻿<!DOCTYPE html>
+﻿@functions{
+
+    static string RenderIf(bool condition, string trueString, string falseString = "")
+    {
+        return (condition) ? trueString : falseString;
+    }
+
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - DuoPollDuoPoll.Web.MVC</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="~/css/site.css"/>
+    <title>@ViewData["Title"] - DuoPoll</title>
+    <link href="~/lib/tailwind.min.css" rel="stylesheet">
+    @* <link rel="stylesheet" href="~/css/site.css"/> *@
+</head>
+<body class="flex flex-col min-h-screen">
+<div class="header-2">
+    <nav class="bg-white py-2 md:py-4">
+        <div class="container px-4 mx-auto md:flex md:items-center">
 
-    </head>
-<body>
-<header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">DuoPoll.Web.MVC</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                    </li>
-                </ul>
+            <div class="flex justify-between items-center">
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="font-bold text-xl text-indigo-600">DuoPoll</a>
+                <button class="border border-solid border-gray-600 px-3 py-1 rounded text-gray-600 opacity-50 hover:opacity-75 md:hidden" id="navbar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <div class="hidden md:flex flex-col md:flex-row md:ml-auto mt-3 md:mt-0" id="navbar-collapse">
+                <a href="#" class="p-2 lg:px-4 md:mx-2 text-white rounded">Home</a>
+                <a asp-controller="Poll" asp-action="Index"
+                   class="p-2 lg:px-4 md:mx-2  @RenderIf(ViewData["Current"].ToString() == "polls.index", "text-white bg-indigo-600", "text-gray-600")
+                     rounded hover:bg-gray-200 hover:text-gray-700 transition-colors duration-300">
+                    Polls
+                </a>
+                <a asp-controller="User" asp-action="Poll"
+                   class="p-2 lg:px-4 md:mx-2   @RenderIf(ViewData["Current"].ToString() == "user.polls", "text-white bg-indigo-600", "text-gray-600")
+                     rounded hover:bg-gray-200 hover:text-gray-700 transition-colors duration-300">
+                    My Polls
+                </a>
+                <a asp-controller="Poll" asp-action="Statistics"
+                   class="p-2 lg:px-4 md:mx-2 @RenderIf(ViewData["Current"].ToString() == "polls.statistics", "text-white bg-indigo-600", "text-gray-600")
+                        rounded hover:bg-gray-200 hover:text-gray-700 transition-colors duration-300">
+                    Statistics
+                </a>
                 <partial name="_LoginPartial"/>
             </div>
         </div>
     </nav>
-</header>
-<div id="app" class="container">
-    <main role="main" class="pb-3">
-        @RenderBody()
-    </main>
 </div>
 
-<footer class="border-top footer text-muted">
-    <div class="container">
-        &copy; 2021 - DuoPoll.Web.MVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+<div class="bg-indigo-100 py-6 md:py-12 flex-grow ">
+    <div class="container px-4 mx-auto">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+</div>
+
+<footer class="border-t border-solid border-gray-900 mt-4 py-4" style="position: st;">
+    <div class="container px-4 mx-auto">
+        <div class="md:flex md:-mx-4 md:items-center">
+            <div class="md:flex-1 md:px-4 text-center md:text-left">
+                <p class="text-white">&copy; <strong> @DateTime.Now.Year - DuoPoll</strong></p>
+            </div>
+            <div class="md:flex-1 md:px-4 text-center md:text-right">
+                <a asp-controller="Home" asp-action="Privacy" class="py-2 px-4 text-gray-600 inline-block hover:underline">Terms of Service</a>
+                <a asp-controller="Home" asp-action="Privacy" class="py-2 px-4 text-gray-600 inline-block hover:underline">Privacy Policy</a>
+            </div>
+        </div>
     </div>
 </footer>
-@* <script src="~/lib/jquery/dist/jquery.min.js"></script> *@
-@* <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> *@
+
 @* <script src="~/js/site.js" asp-append-version="true"></script> *@
+<script>
+let toggleBtn = document.querySelector("#navbar-toggle");
+let collapse = document.querySelector("#navbar-collapse");
+
+toggleBtn.onclick = () => {
+  collapse.classList.toggle("hidden");
+  collapse.classList.toggle("flex");
+};
+
+</script>
+
 <script src="~/js/app.js" asp-append-version="true"></script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>

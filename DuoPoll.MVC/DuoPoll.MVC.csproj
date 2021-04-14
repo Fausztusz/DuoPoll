@@ -22,7 +22,6 @@
 
     <ItemGroup>
       <Folder Include="Views\Shared\Helpers" />
-      <Folder Include="wwwroot\lib" />
     </ItemGroup>
 
     <ItemGroup>

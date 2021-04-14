@@ -1,4 +1,5 @@
-﻿@functions{
+﻿@using Microsoft.AspNetCore.Hosting
+@functions{
 
     static string RenderIf(bool condition, string trueString, string falseString = "")
     {
@@ -13,11 +14,11 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"] - DuoPoll</title>
-    <link href="~/lib/tailwind.min.css" rel="stylesheet">
-    @* <link rel="stylesheet" href="~/css/site.css"/> *@
+    <link href="@RenderIf(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development","lib/tailwind.dev.css","lib/tailwind.prod.css"  )" rel="stylesheet">
+    @* <link href="~/lib/tailwind.dev.css" rel="stylesheet"> *@
 </head>
 <body class="flex flex-col min-h-screen">
-<div class="header-2">
+<div class="header-2 border-b border-gray-200">
     <nav class="bg-white py-2 md:py-4">
         <div class="container px-4 mx-auto md:flex md:items-center">
 
@@ -31,17 +32,17 @@
             <div class="hidden md:flex flex-col md:flex-row md:ml-auto mt-3 md:mt-0" id="navbar-collapse">
                 <a href="#" class="p-2 lg:px-4 md:mx-2 text-white rounded">Home</a>
                 <a asp-controller="Poll" asp-action="Index"
-                   class="p-2 lg:px-4 md:mx-2  @RenderIf(ViewData["Current"].ToString() == "polls.index", "text-white bg-indigo-600", "text-gray-600")
+                   class="p-2 lg:px-4 md:mx-2  @RenderIf(ViewData["Current"] !=null&&ViewData["Current"].ToString() == "polls.index", "text-white bg-indigo-600", "text-gray-600")
                      rounded hover:bg-gray-200 hover:text-gray-700 transition-colors duration-300">
                     Polls
                 </a>
                 <a asp-controller="User" asp-action="Poll"
-                   class="p-2 lg:px-4 md:mx-2   @RenderIf(ViewData["Current"].ToString() == "user.polls", "text-white bg-indigo-600", "text-gray-600")
+                   class="p-2 lg:px-4 md:mx-2   @RenderIf(ViewData["Current"] !=null&&ViewData["Current"].ToString() == "user.polls", "text-white bg-indigo-600", "text-gray-600")
                      rounded hover:bg-gray-200 hover:text-gray-700 transition-colors duration-300">
                     My Polls
                 </a>
                 <a asp-controller="Poll" asp-action="Statistics"
-                   class="p-2 lg:px-4 md:mx-2 @RenderIf(ViewData["Current"].ToString() == "polls.statistics", "text-white bg-indigo-600", "text-gray-600")
+                   class="p-2 lg:px-4 md:mx-2 @RenderIf(ViewData["Current"] !=null&&ViewData["Current"].ToString() == "polls.statistics", "text-white bg-indigo-600", "text-gray-600")
                         rounded hover:bg-gray-200 hover:text-gray-700 transition-colors duration-300">
                     Statistics
                 </a>
@@ -51,15 +52,15 @@
     </nav>
 </div>
 
-<div class="bg-indigo-100 py-6 md:py-12 flex-grow ">
-    <div class="container px-4 mx-auto">
+<div class="dark:bg-gray-900 bg-gray-100 py-6 md:py-12 flex-grow">
+    <div id="app" class="container px-4 mx-auto">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 </div>
 
-<footer class="border-t border-solid border-gray-900 mt-4 py-4" style="position: st;">
+<footer class="border-t border-solid border-gray-900 mt-4 py-4">
     <div class="container px-4 mx-auto">
         <div class="md:flex md:-mx-4 md:items-center">
             <div class="md:flex-1 md:px-4 text-center md:text-left">

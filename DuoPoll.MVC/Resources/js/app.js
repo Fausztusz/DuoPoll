@@ -1,5 +1,5 @@
 import Vue from "vue";
-import "tailwindcss/tailwind.css"
+// import "tailwindcss/tailwind.css"
 
 window.Vue = require("vue");
 

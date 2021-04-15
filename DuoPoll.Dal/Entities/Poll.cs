@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DuoPoll.Dal.Entities
 {
@@ -13,8 +14,12 @@ namespace DuoPoll.Dal.Entities
 
         public uint Id { get; set; }
         public string Name { get; set; }
+        public string Url { get; set; } = "~/Polls/" + Guid.NewGuid().ToString("n").Substring(0, 12);
+
+        [System.ComponentModel.DefaultValue(false)]
         public bool Public { get; set; }
-        public string Url { get; set; }
+
+        [System.ComponentModel.DefaultValue("Draft")]
         public enum Status
         {
             Open,
@@ -23,8 +28,9 @@ namespace DuoPoll.Dal.Entities
             Locked,
             Expired
         }
-        public DateTime Open{ get; set; }
-        public DateTime Close{ get; set; }
+
+        public DateTime Open { get; set; } = DateTime.Now;
+        public DateTime Close { get; set; } = DateTime.Now.AddDays(14);
 
         public virtual ICollection<Answer> Answers { get; set; }
         public virtual User User { get; set; }

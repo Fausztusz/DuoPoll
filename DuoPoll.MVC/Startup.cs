@@ -2,6 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DuoPoll.Dal;
+using DuoPoll.Dal.Entities;
+using DuoPoll.Dal.SeedInterfaces;
+using DuoPoll.Dal.SeedService;
+using DuoPoll.Dal.Users;
 using DuoPoll.MVC.Data;
 using DuoPoll.MVC.Routes;
 using Microsoft.AspNetCore.Builder;
@@ -11,6 +16,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Server.IISIntegration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -29,13 +35,39 @@ namespace DuoPoll.MVC
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite(
-                    Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddDbContext<DuoPollDbContext>(
+            o => o.UseSqlServer(Configuration.GetConnectionString(nameof(DuoPollDbContext))));
 
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            //
+            // services.AddIdentity<User, IdentityRole<int>>()
+            //     .AddEntityFrameworkStores<DuoPollDbContext>()
+            //     .AddDefaultTokenProviders();
+            //
+            // services.AddAuthentication(IISDefaults.AuthenticationScheme);
+            //
+            // services.AddAuthorization(options =>
+            // {
+            //     options.AddPolicy("RequireAdministratorRole", policy => policy.RequireRole(Roles.Administrator));
+            // });
+            //
+            // services.ConfigureApplicationCookie(options =>
+            // {
+            //     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+            //     options.LoginPath = "/Identity/Account/Login";
+            //     options.LogoutPath = "/Identity/Account/Logout";
+            // });
+            //
+            // // services.AddDbContext<ApplicationDbContext>(options =>
+            // //     options.UseSqlite(
+            // //         Configuration.GetConnectionString("DefaultConnection")));
+            // services.AddDatabaseDeveloperPageExceptionFilter();
+            //
+            // services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            //     .AddEntityFrameworkStores<ApplicationDbContext>();
+            //
+            // services.AddScoped<IRoleSeedService, RoleSeedService>()
+            //     .AddScoped<IUserSeedService, UserSeedService>();
+
             services.AddControllersWithViews();
         }
 
@@ -59,8 +91,8 @@ namespace DuoPoll.MVC
 
             app.UseRouting();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+            // app.UseAuthentication();
+            // app.UseAuthorization();
 
 
             app = Web.Route(app);

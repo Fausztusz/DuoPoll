@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 
 namespace DuoPoll.Dal.Entities
 {
-    public class User
+    public partial class User:IdentityUser<int>
     {
         public User()
         {
@@ -11,8 +12,6 @@ namespace DuoPoll.Dal.Entities
         }
 
         public string Name { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
 
         public virtual ICollection<Poll> Polls { get; set; }
         public virtual ICollection<Choice> Choices { get; set; }

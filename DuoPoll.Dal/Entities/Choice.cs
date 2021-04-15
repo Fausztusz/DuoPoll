@@ -10,6 +10,10 @@ namespace DuoPoll.Dal.Entities
         }
 
         public uint Id { get; set; }
+        public uint AnswerId { get; set; }
+        public uint LoserId { get; set; }
+        public uint UserId { get; set; }
+
         public virtual Answer Answer { get; set; }
         public virtual User User { get; set; }
         public virtual Answer Loser { get; set; }

@@ -1,0 +1,33 @@
+@{
+    ViewData["Title"] = "Polls";
+    ViewData["Current"] = "polls.show";
+
+}
+<div class="grid grid-cols-2 text-center gap-5 md:gap-10 max-w-sm md:max-w-4xl mx-auto">
+    <div class="col-span-2 font-body text-3xl md:text-5xl">
+        Some interesting question?
+    </div>
+    <div class="col-span-2 md:col-span-1 h-3xl bg-gray-300 dark:bg-gray-600 rounded-lg">
+        <div class="grid grid-cols-1 font-display items-end m-3 md:m-8 gap-y-3 md:gap-y-20">
+            <div class="items">
+                <img class="md:min-w-full max-h-36 md:max-h-72 mx-auto overflow-hidden" alt="Image" src="~/images/shrek.jpg">
+            </div>
+            <div class="text-4xl">Title</div>
+            <div>
+                <button class="bg-gray-500 rounded-full text-2xl py-2 px-4 md:px-8 md:py-4 ">Select</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-span-2 md:col-span-1 h-3xl bg-gray-300 dark:bg-gray-600 rounded-lg">
+        <div class="grid grid-cols-1 font-display items-end m-3 md:m-8 gap-y-3 md:gap-y-20">
+            <div>
+                <img class="md:min-w-full max-h-36 md:max-h-72 mx-auto overflow-hidden" alt="Image" src="~/images/shrek.jpg">
+            </div>
+            <div class="text-4xl">Title</div>
+            <div>
+                <button class="bg-gray-500 rounded-full text-2xl py-2 px-4 md:px-8 md:py-4 ">Select</button>
+            </div>
+        </div>
+    </div>
+</div>

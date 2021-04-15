@@ -11,10 +11,10 @@ namespace DuoPoll.MVC.Controllers
         }
 
         // GET
-        // public IActionResult Show()
-        // {
-            // return View();
-        // }
+        public IActionResult Show()
+        {
+            return View();
+        }
 
         public IActionResult Statistics()
         {

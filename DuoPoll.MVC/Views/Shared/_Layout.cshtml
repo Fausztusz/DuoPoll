@@ -14,23 +14,23 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"] - DuoPoll</title>
-    <link href="@RenderIf(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development","lib/tailwind.dev.css","lib/tailwind.prod.css"  )" rel="stylesheet">
-    @* <link href="~/lib/tailwind.dev.css" rel="stylesheet"> *@
+    @* <link href="@RenderIf(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development","lib/tailwind.dev.css","lib/tailwind.prod.css"  )" rel="stylesheet"> *@
+    <link href="~/lib/tailwind.dev.css" rel="stylesheet">
+    <link href="~/css/site.css" rel="stylesheet">
 </head>
-<body class="flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen dark:bg-gray-900 bg-gray-100 text-gray-600 dark:text-gray-200 font-sans">
 <div class="header-2 border-b border-gray-200">
-    <nav class="bg-white py-2 md:py-4">
+    <nav class="py-2 md:py-4 font-display">
         <div class="container px-4 mx-auto md:flex md:items-center">
 
             <div class="flex justify-between items-center">
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="font-bold text-xl text-indigo-600">DuoPoll</a>
-                <button class="border border-solid border-gray-600 px-3 py-1 rounded text-gray-600 opacity-50 hover:opacity-75 md:hidden" id="navbar-toggle">
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="font-bold text-3xl text-indigo-600">DuoPoll</a>
+                <button class="border border-solid border-gray-600 px-3 py-1 rounded opacity-50 hover:opacity-75 md:hidden" id="navbar-toggle">
                     <i class="fas fa-bars"></i>
                 </button>
             </div>
 
             <div class="hidden md:flex flex-col md:flex-row md:ml-auto mt-3 md:mt-0" id="navbar-collapse">
-                <a href="#" class="p-2 lg:px-4 md:mx-2 text-white rounded">Home</a>
                 <a asp-controller="Poll" asp-action="Index"
                    class="p-2 lg:px-4 md:mx-2  @RenderIf(ViewData["Current"] !=null&&ViewData["Current"].ToString() == "polls.index", "text-white bg-indigo-600", "text-gray-600")
                      rounded hover:bg-gray-200 hover:text-gray-700 transition-colors duration-300">
@@ -52,9 +52,9 @@
     </nav>
 </div>
 
-<div class="dark:bg-gray-900 bg-gray-100 py-6 md:py-12 flex-grow">
+<div class="py-6 md:py-12 flex-grow">
     <div id="app" class="container px-4 mx-auto">
-        <main role="main" class="pb-3">
+        <main role="main" class="pb-3 font-body">
             @RenderBody()
         </main>
     </div>
@@ -64,11 +64,11 @@
     <div class="container px-4 mx-auto">
         <div class="md:flex md:-mx-4 md:items-center">
             <div class="md:flex-1 md:px-4 text-center md:text-left">
-                <p class="text-white">&copy; <strong> @DateTime.Now.Year - DuoPoll</strong></p>
+                <p>&copy; <strong> @DateTime.Now.Year - DuoPoll</strong></p>
             </div>
             <div class="md:flex-1 md:px-4 text-center md:text-right">
-                <a asp-controller="Home" asp-action="Privacy" class="py-2 px-4 text-gray-600 inline-block hover:underline">Terms of Service</a>
-                <a asp-controller="Home" asp-action="Privacy" class="py-2 px-4 text-gray-600 inline-block hover:underline">Privacy Policy</a>
+                <a asp-controller="Home" asp-action="ToS" class="py-2 px-4 inline-block hover:underline">Terms of Service</a>
+                <a asp-controller="Home" asp-action="Privacy" class="py-2 px-4 inline-block hover:underline">Privacy Policy</a>
             </div>
         </div>
     </div>

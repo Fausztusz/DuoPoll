@@ -28,6 +28,11 @@ namespace DuoPoll.MVC.Controllers
             return View();
         }
 
+        public IActionResult ToS()
+        {
+            return Redirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ?autoplay=1");
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

@@ -7,7 +7,6 @@
 
     <ItemGroup>
         <None Update="app.db" CopyToOutputDirectory="PreserveNewest" />
-        <None Include="wwwroot\css\tailwind.min.css" />
     </ItemGroup>
 
     <ItemGroup>

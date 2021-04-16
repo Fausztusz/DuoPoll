@@ -15,7 +15,7 @@ namespace DuoPoll.MVC.Hosting
             {
                 var serviceProvider = scope.ServiceProvider;
                 var context = serviceProvider.GetRequiredService<TContext>();
-                context.Database.Migrate();
+                await context.Database.MigrateAsync();
 
                 // Role és User létrehozás.
                 // var roleSeeder = serviceProvider.GetRequiredService<IRoleSeedService>();

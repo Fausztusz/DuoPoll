@@ -36,7 +36,8 @@ namespace DuoPoll.MVC
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DuoPollDbContext>(
-            o => o.UseSqlServer(Configuration.GetConnectionString(nameof(DuoPollDbContext))));
+                o => o.UseSqlServer(Configuration.GetConnectionString(nameof(DuoPollDbContext)))
+            );
 
             //
             // services.AddIdentity<User, IdentityRole<int>>()
@@ -96,7 +97,6 @@ namespace DuoPoll.MVC
 
 
             app = Web.Route(app);
-
         }
     }
 }

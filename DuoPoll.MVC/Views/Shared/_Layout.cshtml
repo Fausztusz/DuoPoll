@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNetCore.Hosting
+﻿@* @using Microsoft.AspNetCore.Hosting *@
+
 @functions{
 
     static string RenderIf(bool condition, string trueString, string falseString = "")
@@ -6,6 +7,16 @@
         return (condition) ? trueString : falseString;
     }
 
+    static string Svg(string name, string height="", string width="", string cls="", string style="")
+    {
+        if (!System.IO.File.Exists("./wwwroot/svgs/" + name + ".svg"))
+            return "";
+        return System.IO.File.ReadAllText("./wwwroot/svgs/" + name + ".svg")
+            .Replace("$height$", height)
+            .Replace("$width$",width)
+            .Replace("$class$",cls)
+            .Replace("$style$",style);
+    }
 }
 
 <!DOCTYPE html>
@@ -24,7 +35,11 @@
         <div class="container px-4 mx-auto md:flex md:items-center">
 
             <div class="flex justify-between items-center">
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="font-bold text-3xl text-indigo-600">DuoPoll</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="font-bold text-4xl text-indigo-600 dark:text-gray-200">
+                    <span class="dark:hover:text-indigo-600 duration-1000">Duo</span>
+                    @Html.Raw(Svg("thumbs-up-down", "3rem", "3rem", "inline-block fill-current -m-2 dark:hover:text-indigo-600 duration-1000"))
+                    <span class="dark:hover:text-indigo-600 duration-1000">Poll</span>
+                </a>
                 <button class="border border-solid border-gray-600 px-3 py-1 rounded opacity-50 hover:opacity-75 md:hidden" id="navbar-toggle">
                     <i class="fas fa-bars"></i>
                 </button>
@@ -32,17 +47,17 @@
 
             <div class="hidden md:flex flex-col md:flex-row md:ml-auto mt-3 md:mt-0" id="navbar-collapse">
                 <a asp-controller="Poll" asp-action="Index"
-                   class="p-2 lg:px-4 md:mx-2  @RenderIf(ViewData["Current"] !=null&&ViewData["Current"].ToString() == "polls.index", "text-white bg-indigo-600", "text-gray-600")
+                   class="p-2 lg:px-4 md:mx-2  @RenderIf(ViewData["Current"] != null && ViewData["Current"].ToString() == "polls.index", "text-white bg-indigo-600", "text-gray-600")
                      rounded hover:bg-gray-200 hover:text-gray-700 transition-colors duration-300">
                     Polls
                 </a>
                 <a asp-controller="User" asp-action="Poll"
-                   class="p-2 lg:px-4 md:mx-2   @RenderIf(ViewData["Current"] !=null&&ViewData["Current"].ToString() == "user.polls", "text-white bg-indigo-600", "text-gray-600")
+                   class="p-2 lg:px-4 md:mx-2   @RenderIf(ViewData["Current"] != null && ViewData["Current"].ToString() == "user.polls", "text-white bg-indigo-600", "text-gray-600")
                      rounded hover:bg-gray-200 hover:text-gray-700 transition-colors duration-300">
                     My Polls
                 </a>
                 <a asp-controller="Poll" asp-action="Statistics"
-                   class="p-2 lg:px-4 md:mx-2 @RenderIf(ViewData["Current"] !=null&&ViewData["Current"].ToString() == "polls.statistics", "text-white bg-indigo-600", "text-gray-600")
+                   class="p-2 lg:px-4 md:mx-2 @RenderIf(ViewData["Current"] != null && ViewData["Current"].ToString() == "polls.statistics", "text-white bg-indigo-600", "text-gray-600")
                         rounded hover:bg-gray-200 hover:text-gray-700 transition-colors duration-300">
                     Statistics
                 </a>

@@ -24,7 +24,7 @@ namespace DuoPoll.Dal.SeedService
                 var user = new User
                 {
                     Email = "admin@duopoll.hu",
-                    Name = "Adminisztrátor Aladár",
+                    NormalizedEmail = "Adminisztrátor Aladár",
                     SecurityStamp = Guid.NewGuid().ToString(),
                     UserName = "admin"
                 };

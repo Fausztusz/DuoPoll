@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 
 namespace DuoPoll.Dal.Entities
 {
-    public partial class User:IdentityUser<int>
+    public partial class User : IdentityUser<int>
     {
         public User()
         {
@@ -11,10 +12,7 @@ namespace DuoPoll.Dal.Entities
             Choices = new HashSet<Choice>();
         }
 
-        public string Name { get; set; }
-
-        public virtual ICollection<Poll> Polls { get; set; }
-        public virtual ICollection<Choice> Choices { get; set; }
-
+        [InverseProperty("User")] public virtual ICollection<Poll> Polls { get; set; }
+        [InverseProperty("User")] public virtual ICollection<Choice> Choices { get; set; }
     }
 }

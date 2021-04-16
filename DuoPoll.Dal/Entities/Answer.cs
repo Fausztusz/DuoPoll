@@ -1,4 +1,7 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DuoPoll.Dal.Entities
 {
@@ -8,16 +11,20 @@ namespace DuoPoll.Dal.Entities
         {
             Poll = new Poll();
             Choices = new HashSet<Choice>();
+            Losses = new HashSet<Choice>();
         }
 
-        public uint Id { get; set; }
-        public uint PollId { get; set; }
-        public string Title { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
-        [System.ComponentModel.DefaultValue("")]
-        public string Media { get; set; }
+        public int PollId { get; set; }
+        [MaxLength(50)] public string Title { get; set; }
 
-        public virtual Poll Poll { get; set; }
+        [MaxLength(255)] [AllowNull] public string Media { get; set; }
+
+        [InverseProperty("Answers")] public virtual Poll Poll { get; set; }
         public virtual ICollection<Choice> Choices { get; set; }
+        public virtual ICollection<Choice> Losses { get; set; }
     }
 }

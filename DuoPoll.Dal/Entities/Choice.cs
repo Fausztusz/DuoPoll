@@ -1,3 +1,6 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace DuoPoll.Dal.Entities
 {
     public class Choice
@@ -9,13 +12,17 @@ namespace DuoPoll.Dal.Entities
             Loser = new Answer();
         }
 
-        public uint Id { get; set; }
-        public uint AnswerId { get; set; }
-        public uint LoserId { get; set; }
-        public uint UserId { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+
+        public int AnswerId { get; set; }
+        public int LoserId { get; set; }
+        public int UserId { get; set; }
 
         public virtual Answer Answer { get; set; }
-        public virtual User User { get; set; }
         public virtual Answer Loser { get; set; }
+
+        [InverseProperty("Choices")] public virtual User User { get; set; }
     }
 }

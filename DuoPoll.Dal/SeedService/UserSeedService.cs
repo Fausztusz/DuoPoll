@@ -29,7 +29,7 @@ namespace DuoPoll.Dal.SeedService
                     UserName = "admin"
                 };
 
-                var createResult = await userManager.CreateAsync(user, "$Administrator123");
+                var createResult = await userManager.CreateAsync(user, "asdasdasdasdasd");
                 var addToRoleResult = await userManager.AddToRoleAsync(user, Roles.Administrator);
 
                 if (!createResult.Succeeded || !addToRoleResult.Succeeded)

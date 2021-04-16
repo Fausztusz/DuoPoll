@@ -1,12 +1,13 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
+@using DuoPoll.Dal.Entities
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
 
 @if (SignInManager.IsSignedIn(User))
 {
     <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage"
        class="p-2 lg:px-4 md:mx-2 text-indigo-600 text-center border border-transparent rounded hover:bg-indigo-100 hover:text-indigo-700 transition-colors duration-300">
-        Hello @User.Identity.Name!
+        @* Hello @User.Identity.Name! *@
     </a>
     <div>
         <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new {area = ""})">

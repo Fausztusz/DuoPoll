@@ -1,5 +1,7 @@
 ﻿using System;
 using DuoPoll.Dal.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -7,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace DuoPoll.Dal
 {
-    public partial class DuoPollDbContext : DbContext
+    public partial class DuoPollDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     {
         public DuoPollDbContext()
         {

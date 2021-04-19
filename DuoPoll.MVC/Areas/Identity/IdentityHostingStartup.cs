@@ -24,7 +24,7 @@ namespace DuoPoll.MVC.Areas.Identity
                         context.Configuration.GetConnectionString(nameof(DuoPollDbContext))));
 
                 // services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                //     .AddEntityFrameworkStores<IdentityDataContext>();
+                // .AddEntityFrameworkStores<IdentityDataContext>();
 
                 services.Configure<IdentityOptions>(o =>
                 {
@@ -42,9 +42,13 @@ namespace DuoPoll.MVC.Areas.Identity
                     o.SignIn.RequireConfirmedPhoneNumber = false;
                 });
 
+                // services.AddDefaultIdentity<IdentityUser>()
+                //     .AddEntityFrameworkStores<DuoPollDbContext>()
+                //     .AddDefaultTokenProviders();
+
                 services.AddIdentity<User, IdentityRole<int>>()
-                    .AddEntityFrameworkStores<DuoPollDbContext>()
-                    .AddDefaultTokenProviders();
+                .AddEntityFrameworkStores<DuoPollDbContext>()
+                .AddDefaultTokenProviders();
 
             });
         }

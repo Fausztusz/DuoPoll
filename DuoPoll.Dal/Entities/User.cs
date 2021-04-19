@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Identity;
 
 namespace DuoPoll.Dal.Entities
@@ -12,6 +13,7 @@ namespace DuoPoll.Dal.Entities
             Choices = new HashSet<Choice>();
         }
 
+        [AllowNull]
         [InverseProperty("User")] public virtual ICollection<Poll> Polls { get; set; }
         [InverseProperty("User")] public virtual ICollection<Choice> Choices { get; set; }
     }

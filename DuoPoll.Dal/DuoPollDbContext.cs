@@ -22,7 +22,7 @@ namespace DuoPoll.Dal
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https: //go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                // TODO Ez dinamikusan kell olvasni?
                 optionsBuilder.UseSqlServer(
                     "Server=tcp:sql-server-for-my-homework.database.windows.net,1433;Initial Catalog=DuoPoll;Persist Security Info=False;User ID=sqladmin;Password=nyvUGG53RKQvRhM#3Y#r;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
             }

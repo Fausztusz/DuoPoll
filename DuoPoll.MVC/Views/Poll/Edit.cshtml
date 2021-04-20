@@ -1,0 +1,21 @@
+@{
+    ViewData["Title"] = "Polls";
+    ViewData["Current"] = "polls.create";
+}
+<form method="POST" asp-controller="Poll">
+    <div class="grid grid-cols-2 max-w-2xl mx-auto gap-3 m-4 jus filter drop-shadow-lg hover:drop-shadow-2xl">
+        <div class="col-span-1">Name:</div>
+        <t-input name="Name"></t-input>
+
+        <div class="col-span-1">Public:</div>
+        <checkbox name="Public"></checkbox>
+
+        <div class="col-span-1">Open:</div>
+        <date-picker name="Open" lang="en"></date-picker>
+
+        <div class="col-span-1">Close:</div>
+        <date-picker name="Close" lang="hu"></date-picker>
+
+        <t-button class="col-span-2">Submit</t-button>
+    </div>
+</form>

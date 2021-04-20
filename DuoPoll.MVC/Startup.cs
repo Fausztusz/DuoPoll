@@ -39,12 +39,18 @@ namespace DuoPoll.MVC
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
+            services.AddAntiforgery(o =>
+            {
+                o.FormFieldName = "_csrf";
+                o.HeaderName = "X-CSRF-TOKEN";
+            });
+
             services.AddRazorPages();
             services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<User> userManager)
         {
             if (env.IsDevelopment())
             {
@@ -66,15 +72,7 @@ namespace DuoPoll.MVC
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapRazorPages();
-            });
-
-            app = Web.Route(app);
+            Web.Route(app);
         }
     }
 }

@@ -49,7 +49,6 @@ namespace DuoPoll.MVC.Areas.Identity
                 services.AddIdentity<User, IdentityRole<int>>()
                 .AddEntityFrameworkStores<DuoPollDbContext>()
                 .AddDefaultTokenProviders();
-
             });
         }
     }

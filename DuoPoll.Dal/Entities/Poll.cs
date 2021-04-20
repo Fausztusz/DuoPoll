@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace DuoPoll.Dal.Entities
 {
+    [Index(nameof(Id),nameof(Url))]
     public class Poll
     {
         public Poll()
@@ -27,8 +29,8 @@ namespace DuoPoll.Dal.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [MaxLength(50)] public string Name { get; set; }
-        [MaxLength(32)] public string Url { get; set; } = "~/Polls/" + Guid.NewGuid().ToString("n");
+        [MaxLength(50)] [Required] public string Name { get; set; }
+        [MaxLength(32)] public string Url { get; set; } = Guid.NewGuid().ToString("n");
 
         public bool Public { get; set; }
         public StatusType Status { get; set; }

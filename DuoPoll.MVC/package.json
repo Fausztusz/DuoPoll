@@ -10,7 +10,9 @@
     "production": "webpack --mode production"
   },
   "dependencies": {
-    "vue": "^2.6.12"
+    "@tailwindcss/forms": "^0.3.2",
+    "vue": "^2.6.12",
+    "vue-tailwind": "^2.2.1"
   },
   "devDependencies": {
     "autoprefixer": "^10.2.5",

@@ -26,7 +26,12 @@ module.exports = {
     variants: {
         extend: {
             dropShadow: ['hover', 'focus'],
+            // Vue forms
+            opacity: ['disabled'],
+            cursor: ['disabled'],
         },
     },
-    plugins: [],
+    plugins: [
+        require('@tailwindcss/forms'),
+    ],
 }

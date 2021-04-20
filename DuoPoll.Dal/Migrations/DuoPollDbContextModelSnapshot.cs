@@ -85,6 +85,7 @@ namespace DuoPoll.Dal.Migrations
                         .HasDefaultValueSql("DATEADD(week,2,GETDATE())");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -113,6 +114,8 @@ namespace DuoPoll.Dal.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("Id", "Url");
 
                     b.ToTable("Polls");
                 });

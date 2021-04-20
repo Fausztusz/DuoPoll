@@ -1,0 +1,4 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/CodeInspection/Highlighting/AnalysisEnabled/@EntryValue">VISIBLE_FILES</s:String>
+	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=1d931ee3_002D0b05_002D4d93_002D91ae_002Dec4e4e78d000_0023WebApplication1/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=ee966055_002D8d5c_002D4d3a_002D8435_002D20987e8d49fc_0023WebApp1/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

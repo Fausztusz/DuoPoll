@@ -19,7 +19,12 @@ namespace DuoPoll.MVC.Routes
                 endpoints.MapControllerRoute(
                     name: "users",
                     pattern: "{controller=Users}/{action=Users}/{id?}");
-                // endpoints.MapRazorPages();
+                endpoints.MapControllerRoute(
+                    name: "poll.edit",
+                    pattern: "{controller=Polls}/{action=Edit}/{id}");
+
+
+                endpoints.MapRazorPages();
             });
 
             return app;

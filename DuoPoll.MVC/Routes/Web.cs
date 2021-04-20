@@ -20,6 +20,12 @@ namespace DuoPoll.MVC.Routes
                     name: "users",
                     pattern: "{controller=Users}/{action=Users}/{id?}");
                 endpoints.MapControllerRoute(
+                    name: "poll.details",
+                    pattern: "Test/Details/{url}",
+                    constraints: new {url = "length(32)"},
+                    defaults: new {controller = "Test", action = "Details"}
+                );
+                endpoints.MapControllerRoute(
                     name: "poll.edit",
                     pattern: "{controller=Polls}/{action=Edit}/{id}");
 

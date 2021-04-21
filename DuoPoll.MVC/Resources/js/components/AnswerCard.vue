@@ -1,22 +1,26 @@
 <template>
   <div class="answer-card-wrapper h-full">
-    <div class="grid grid-cols-1 h-full gap-y-5 p-5 bg-gray-500 border-gray-200 rounded-lg">
+    <div
+        :class="errorClass+'transition duration-1000 grid grid-cols-1 h-full gap-y-5 p-5 bg-gray-500 border-gray-200 rounded-lg'">
       <div class="col-span-1">
         <label>
           <t-input placeholder="Name" :value="title">{{ title }}</t-input>
         </label>
       </div>
       <div class="col-span-1">
-        <label>
-          <t-select v-model="dropdown"
-                    :options="[{value:'image',text:'Upload image'},{value:'video',text:'Youtube link'}]"></t-select>
-        </label>
+<!--        <label>-->
+<!--          <t-select v-model="dropdown"-->
+<!--                    :options="[{value:'image',text:'Upload image'},{value:'video',text:'Youtube link'}]"></t-select>-->
+<!--        </label>-->
       </div>
-      <div class="col-span-1 min-h-42 max-h-52">
-        <div v-if="media==='image'">
-          <vue-dropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions"></vue-dropzone>
+      <div class="col-span-1">
+        <div v-if="dropdown==='image'" style="height: 240px">
+          <vue-dropzone ref="myVueDropzone" id="dropzone" style="display: flex; justify-content: center; height: 240px"
+                        @vdropzone-success="successResponse" @vdropzone-error="errorResponse" @vdropzone-mounted="dropzoneMounted"
+                        :options="dropzoneOptions">
+          </vue-dropzone>
         </div>
-        <div v-if="media==='video'">
+        <div v-if="dropdown==='video'">
           <t-input placeholder="Youtube link"></t-input>
         </div>
       </div>
@@ -24,8 +28,6 @@
         <t-button type="button" class="w-full" @click="save">Save</t-button>
       </div>
     </div>
-
-
   </div>
 </template>
 
@@ -42,15 +44,25 @@ export default {
     title: {
       type: String,
       default: ""
+    },
+    media: {
+      type: String,
+      default: ""
     }
   },
   data() {
     return {
+      id: Math.random(),
       dropdown: "image",
-      media: "image",
+      errorClass: "",
+
       dropzoneOptions: {
-        url: 'https://httpbin.org/post',
+        url: '/Image/Upload',
         thumbnailWidth: 200,
+        thumbnailHeight: 200,
+        thumbnailMethod: "crop",
+        addRemoveLinks: true,
+        maxFiles: 1,
         maxFilesize: 3,
         headers: {"My-Awesome-Header": "header value"}
       }
@@ -76,7 +88,30 @@ export default {
           .finally(() => {
           })
 
-    }
+    },
+    dropzoneMounted(){
+      let file = { size: 200, name: "Icon", type: "image/png" };
+      if(this.media)
+      this.$refs.myVueDropzone.manuallyAddFile(file, this.media);
+    },
+    successResponse(file, response) {
+      this.media = response.url
+    },
+    errorResponse(file, message, xhr) {
+      this.errorClass = "ring-6 ring-red-800 ring-opacity-100"
+      setTimeout(() => {
+        this.errorClass = "ring-6 ring-red-700 ring-opacity-100";
+        setTimeout(() => {
+          this.errorClass = "ring-8 ring-red-600 ring-opacity-100";
+          setTimeout(() => {
+            this.errorClass = "ring-8 ring-red-500 ring-opacity-100";
+            setTimeout(() => {
+              this.errorClass = ""
+            }, 1000)
+          }, 1000)
+        }, 1000)
+      }, 1000)
+    },
   },
   watch: {
     dropdown: function (val) {

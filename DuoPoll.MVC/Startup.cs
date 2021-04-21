@@ -1,10 +1,9 @@
 using System;
+using Azure.Storage.Blobs;
 using DuoPoll.Dal;
 using DuoPoll.Dal.Entities;
 using DuoPoll.MVC.Routes;
 using DuoPoll.MVC.Settings;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -13,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.Identity.Web.UI;
+using Microsoft.Extensions.Azure;
 
 namespace DuoPoll.MVC
 {
@@ -32,6 +31,12 @@ namespace DuoPoll.MVC
             services.AddDbContext<DuoPollDbContext>(
                 o => o.UseSqlServer(Configuration.GetConnectionString(nameof(DuoPollDbContext)))
             );
+
+            services.AddAzureClients(builder =>
+            {
+                builder.AddBlobServiceClient(Configuration.GetConnectionString("BlobContext"))
+                    .WithName("BlobService");
+            });
 
             // SMTP szerver beállításokat felolvassa az appsettings.json-ból a MailSettings osztályba.
             services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
@@ -57,7 +62,8 @@ namespace DuoPoll.MVC
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<User> userManager)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<User> userManager,
+            IAzureClientFactory<BlobServiceClient> blobClientFactory)
         {
             if (env.IsDevelopment())
             {

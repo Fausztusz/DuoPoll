@@ -1,15 +1,13 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.WebPages;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using DuoPoll.Dal;
 using DuoPoll.Dal.Entities;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-namespace DuoPoll.MVC
+namespace DuoPoll.MVC.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

@@ -4,10 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web.Mvc;
 using System.Web.WebPages;
 using DuoPoll.Dal;
 using DuoPoll.MVC.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -32,7 +32,7 @@ namespace DuoPoll.MVC.Controllers
             return View();
         }
 
-        [Authorize]
+        [Microsoft.AspNetCore.Authorization.Authorize]
         public IActionResult Poll()
         {
             ViewData["Title"] = "My Polls";

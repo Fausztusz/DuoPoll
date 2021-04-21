@@ -1,22 +1,23 @@
+@using DuoPoll.Dal.Entities
 @{
-    ViewData["Title"] = "Polls";
-    ViewData["Current"] = "polls.index";
+    ViewData["Title"] = ViewData["Title"] ?? "Polls";
+    ViewData["Current"] = ViewData["Current"] ?? "polls.index";
 }
 
-@for (int i = 0; i < 10; i++)
+@foreach (Poll poll  in Model)
 {
-    <a asp-controller="Poll" asp-action="Show" asp-route-id="@i"
+    <a asp-controller="Poll" asp-action="Details" asp-route-url="@poll.Url"
        class="grid grid-cols-12 m-4 filter drop-shadow-lg hover:drop-shadow-2xl cursor-pointer">
         <div class="col-span-12 p-5 bg-white dark:bg-gray-600 dark:hover:bg-gray-700 hover:bg-indigo-200 bg-indigo-100 overflow-hidden shadow sm:rounded-lg">
             <div class="grid grid-cols-12">
                 <div class="col-span-10">
                     <div class="grid grid-rows-2 align-text-middle dark:text-gray-200 text-gray-900">
-                        <div class="text-6xl row-span-1 h-full">Title of the poll</div>
-                        <div class="row-span-1 h-full pt-5">By: Some Name</div>
+                        <div class="text-6xl row-span-1 h-full">@poll.Name</div>
+                        <div class="row-span-1 h-full pt-5">By: @poll.User.UserName</div>
                     </div>
                 </div>
                 <div class="col-span-2">
-                    <img alt="Poll thumbnail" src="images/shrek.jpg" style="width: 100%;height: 100%;object-fit: contain;">
+                    <img alt="Poll thumbnail" src="~/images/shrek.jpg" style="width: 100%;height: 100%;object-fit: contain;">
                 </div>
 
             </div>

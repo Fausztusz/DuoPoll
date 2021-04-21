@@ -1,14 +1,22 @@
 import Vue from "vue";
+import VueAxios from 'vue-axios'
+import axios from 'axios'
 import VueTailwind from 'vue-tailwind'
+
 import TInput from "vue-tailwind/dist/t-input";
 import TCheckbox from "vue-tailwind/dist/t-checkbox";
 import TDatepicker from "vue-tailwind/dist/t-datepicker";
 import TButton from "vue-tailwind/dist/t-button";
+import TSelect from "vue-tailwind/dist/t-select";
 
 import Hungarian from "vue-tailwind/dist/l10n/hu";
 import English from "vue-tailwind/dist/l10n/default";
 
+import AnswerField from "./components/AnswerField";
+
 window.Vue = require("vue");
+window.axios = axios;
+window.VueAxios = VueAxios;
 
 const settings = {
     'date-picker': {
@@ -53,10 +61,12 @@ const settings = {
     },
     't-input': {component: TInput},
     'checkbox': {component: TCheckbox},
+    't-select': {component: TSelect},
     't-button': {component: TButton},
 }
 
 Vue.use(VueTailwind, settings)
+Vue.component('answer-field',AnswerField)
 
 Vue.config.devtools = process.env.NODE_ENV === 'development';
 Vue.config.productionTip = process.env.NODE_ENV === 'development';

@@ -3,6 +3,7 @@ const path = require('path');
 
 module.exports = {
     mode: process.env.NODE_ENV,
+    plugins:[new VueLoaderPlugin()],
     entry: path.resolve(__dirname, './Resources/js/app.js'),
     output: {
         path: path.resolve(__dirname, "./wwwroot/js/"),
@@ -18,7 +19,7 @@ module.exports = {
         rules: [
             {
                 test: /\.vue$/,
-                loader: 'vue-loader'
+                use: ['vue-loader']
             },
             // this will apply to both plain `.js` files
             // AND `<script>` blocks in `.vue` files

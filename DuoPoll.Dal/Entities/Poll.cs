@@ -7,13 +7,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DuoPoll.Dal.Entities
 {
-    [Index(nameof(Id),nameof(Url))]
+    [Index(nameof(Id), nameof(Url))]
     public class Poll
     {
         public Poll()
         {
-            User = new User();
-            Answers = new HashSet<Answer>();
+            // User = new User();
+            // Answers = new HashSet<Answer>();
         }
 
         public enum StatusType
@@ -30,14 +30,16 @@ namespace DuoPoll.Dal.Entities
         public int Id { get; set; }
 
         [MaxLength(50)] [Required] public string Name { get; set; }
-        [MaxLength(32)] public string Url { get; set; } = Guid.NewGuid().ToString("n");
+        [StringLength(32)] public string Url { get; set; } = Guid.NewGuid().ToString("n");
 
         public bool Public { get; set; }
         public StatusType Status { get; set; }
         public DateTime Open { get; set; } = DateTime.Now;
         public DateTime Close { get; set; } = DateTime.Now.AddDays(14);
 
-        [InverseProperty("Poll")] public virtual ICollection<Answer> Answers { get; set; }
-        [InverseProperty("Polls")] public virtual User User { get; set; }
+        public virtual ICollection<Answer> Answers { get; set; }
+
+        [ForeignKey("UserId")]
+        public virtual User User { get; set; }
     }
 }

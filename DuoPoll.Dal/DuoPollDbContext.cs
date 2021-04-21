@@ -3,7 +3,6 @@ using DuoPoll.Dal.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
@@ -67,7 +66,6 @@ namespace DuoPoll.Dal
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 
-        public DbSet<User> Users { get; set; }
         public DbSet<Poll> Polls { get; set; }
         public DbSet<Answer> Answers { get; set; }
         public DbSet<Choice> Choices { get; set; }

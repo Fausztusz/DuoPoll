@@ -45,6 +45,13 @@ namespace DuoPoll.MVC
                 o.HeaderName = "X-CSRF-TOKEN";
             });
 
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                options.LoginPath = "/Identity/Account/Login";
+                options.LogoutPath = "/Identity/Account/Logout";
+            });
+
             services.AddRazorPages();
             services.AddControllersWithViews();
         }

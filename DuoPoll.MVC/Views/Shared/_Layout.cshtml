@@ -1,4 +1,7 @@
-﻿@* @using Microsoft.AspNetCore.Hosting *@
+﻿@using Microsoft.AspNetCore.Identity
+@using DuoPoll.Dal.Entities
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
 
 @functions{
 
@@ -7,16 +10,17 @@
         return (condition) ? trueString : falseString;
     }
 
-    static string Svg(string name, string height="", string width="", string cls="", string style="")
+    static string Svg(string name, string height = "", string width = "", string cls = "", string style = "")
     {
         if (!System.IO.File.Exists("./wwwroot/svgs/" + name + ".svg"))
             return "";
         return System.IO.File.ReadAllText("./wwwroot/svgs/" + name + ".svg")
             .Replace("$height$", height)
-            .Replace("$width$",width)
-            .Replace("$class$",cls)
-            .Replace("$style$",style);
+            .Replace("$width$", width)
+            .Replace("$class$", cls)
+            .Replace("$style$", style);
     }
+
 }
 
 <!DOCTYPE html>
@@ -51,16 +55,24 @@
                      rounded hover:bg-gray-200 hover:text-gray-700 transition-colors duration-300">
                     Polls
                 </a>
-                <a asp-controller="User" asp-action="Poll"
-                   class="p-2 lg:px-4 md:mx-2   @RenderIf(ViewData["Current"] != null && ViewData["Current"].ToString() == "user.polls", "text-white bg-indigo-600", "text-gray-600")
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <a asp-controller="User" asp-action="Poll"
+                       class="p-2 lg:px-4 md:mx-2   @RenderIf(ViewData["Current"] != null && ViewData["Current"].ToString() == "user.polls", "text-white bg-indigo-600", "text-gray-600")
                      rounded hover:bg-gray-200 hover:text-gray-700 transition-colors duration-300">
-                    My Polls
-                </a>
-                <a asp-controller="Poll" asp-action="Statistics"
-                   class="p-2 lg:px-4 md:mx-2 @RenderIf(ViewData["Current"] != null && ViewData["Current"].ToString() == "polls.statistics", "text-white bg-indigo-600", "text-gray-600")
+                        My Polls
+                    </a>
+                    <a asp-controller="Poll" asp-action="Create"
+                       class="p-2 lg:px-4 md:mx-2   @RenderIf(ViewData["Current"] != null && ViewData["Current"].ToString() == "polls.create", "text-white bg-indigo-600", "text-gray-600")
+                     rounded hover:bg-gray-200 hover:text-gray-700 transition-colors duration-300">
+                        Create
+                    </a>
+                    <a asp-controller="Poll" asp-action="Statistics"
+                       class="p-2 lg:px-4 md:mx-2 @RenderIf(ViewData["Current"] != null && ViewData["Current"].ToString() == "polls.statistics", "text-white bg-indigo-600", "text-gray-600")
                         rounded hover:bg-gray-200 hover:text-gray-700 transition-colors duration-300">
-                    Statistics
-                </a>
+                        Statistics
+                    </a>
+                }
                 <partial name="_LoginPartial"/>
             </div>
         </div>

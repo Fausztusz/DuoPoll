@@ -1,14 +1,18 @@
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using DuoPoll.Dal;
 using DuoPoll.Dal.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 
 namespace DuoPoll.MVC.Controllers
 {
     [AutoValidateAntiforgeryToken]
+    [Authorize]
     public class PollController : Controller
     {
         private UserManager<User> _userManager;
@@ -21,16 +25,32 @@ namespace DuoPoll.MVC.Controllers
         }
 
         // GET
-        public IActionResult Index()
+        [AllowAnonymous]
+        public async Task<IActionResult> Index()
         {
-            return View();
+            return View(await _dbContext.Polls
+                .Where(p => p.Public == true)
+                .Include(p => p.User).ToListAsync());
         }
 
         // GET
-        public IActionResult Show(Poll poll)
+        [HttpGet("Poll/Details/{url:length(32)}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Details(string url)
         {
+            if (url == null)
+            {
+                return NotFound();
+            }
 
-            return View();
+            var poll = await _dbContext.Polls
+                .FirstOrDefaultAsync(m => m.Url == url);
+            if (poll == null)
+            {
+                return NotFound();
+            }
+
+            return View(poll);
         }
 
         // GET
@@ -42,11 +62,23 @@ namespace DuoPoll.MVC.Controllers
 
         // GET
         [Authorize]
-        [HttpGet("/Polls/{id}/Edit")]
-        public IActionResult Edit(Poll poll)
+        [HttpGet("Poll/Edit/{url:length(32)}")]
+        public async Task<IActionResult> Edit(string url)
         {
-            ViewBag.Poll = poll;
-            return View("~/Views/Poll/Edit.cshtml");
+            if (url == null)
+            {
+                return NotFound();
+            }
+
+            var poll = await _dbContext.Polls.FirstOrDefaultAsync(p=>p.Url == url);
+            if (poll == null)
+            {
+                return NotFound();
+            }
+
+            ViewData["Title"] = "Edit Poll";
+            ViewData["Current"] = "polls.update";
+            return View("~/Views/Poll/Edit.cshtml", poll);
         }
 
         // POST
@@ -60,25 +92,62 @@ namespace DuoPoll.MVC.Controllers
                 Public = poll.Public,
                 Open = poll.Open,
                 Close = poll.Close,
-                User = await _userManager.FindByNameAsync(this.User.GetDisplayName())
+                // User = await _userManager.FindByNameAsync(this.User.GetDisplayName())
+                User = await _userManager.FindByIdAsync(this.User.FindFirst(ClaimTypes.NameIdentifier).Value)
             };
 
             await _dbContext.Polls.AddAsync(newPoll);
             await _dbContext.SaveChangesAsync();
 
-            return Redirect("/Poll/Show/" + newPoll.Id);
+            return Redirect("/Poll/Details/" + newPoll.Url);
         }
 
-        [HttpPost("/Polls/{id}")]
-        public IActionResult Update(Poll poll)
+        [Authorize]
+        [HttpPost("Poll/Edit/{url:length(32)}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Update(string url,[Bind("Id,Name,Url,Public,Status,Open,Close")] Poll poll)
         {
-            return View("~/Views/Poll/Show.cshtml" + poll.Id);
-        }
 
+            if (url != poll.Url)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _dbContext.Update(poll);
+                    await _dbContext.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!PollExists(poll.Url))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View("~/Views/Poll/Details.cshtml", poll);
+        }
 
         public IActionResult Statistics()
         {
             return View();
+        }
+
+        private bool PollExists(int id)
+        {
+            return _dbContext.Polls.Any(e => e.Id == id);
+        }
+        private bool PollExists(string url)
+        {
+            return _dbContext.Polls.Any(e => e.Url == url);
         }
     }
 }

@@ -1,17 +1,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.WebPages;
+using System.Web.Helpers;
 using DuoPoll.Dal;
 using DuoPoll.Dal.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ControllerBase = Microsoft.AspNetCore.Mvc.ControllerBase;
+using JsonResult = Microsoft.AspNetCore.Mvc.JsonResult;
+using Controller = Microsoft.AspNetCore.Mvc.Controller;
 
 namespace DuoPoll.MVC.Controllers
 {
-    [Route("api/[controller]")]
+    [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     [ApiController]
-    public class AnswerController : ControllerBase
+    public class AnswerController : Controller
     {
         private readonly DuoPollDbContext _context;
 
@@ -21,14 +24,14 @@ namespace DuoPoll.MVC.Controllers
         }
 
         // GET: api/Answer
-        [HttpGet]
+        [Microsoft.AspNetCore.Mvc.HttpGet]
         public async Task<ActionResult<IEnumerable<Answer>>> GetAnswers()
         {
             return await _context.Answers.ToListAsync();
         }
 
         // GET: api/Answer/5
-        [HttpGet("{id}")]
+        [Microsoft.AspNetCore.Mvc.HttpGet("{id}")]
         public async Task<ActionResult<Answer>> GetAnswer(int id)
         {
             var answer = await _context.Answers.FindAsync(id);
@@ -43,7 +46,7 @@ namespace DuoPoll.MVC.Controllers
 
         // PUT: api/Answer/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [Microsoft.AspNetCore.Mvc.HttpPut("{id}")]
         public async Task<IActionResult> PutAnswer(int id, Answer answer)
         {
             if (id != answer.Id)
@@ -76,22 +79,23 @@ namespace DuoPoll.MVC.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Answer>> PostAnswer()
-            // public async Task<ActionResult<Answer>> PostAnswer(Answer answer)
         {
+            var poll = await _context.Polls
+                .Include(p => p.Answers)
+                .FirstOrDefaultAsync(p => p.Url == Request.Form["Url"].ToString());
             var answer = new Answer
             {
                 Title = Request.Form["Title"],
                 Media = Request.Form["Media"],
-                Poll = await _context.Polls.SingleAsync(p => p.Id == Request.Form["PollId"].ToString().AsInt()),
             };
-            _context.Answers.Add(answer);
+            poll.Answers.Add(answer);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetAnswer", new {id = answer.Id}, answer);
+            return Json(new {id = answer.Id});
         }
 
         // DELETE: api/Answer/5
-        [HttpDelete("{id}")]
+        [Microsoft.AspNetCore.Mvc.HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAnswer(int id)
         {
             var answer = await _context.Answers.FindAsync(id);

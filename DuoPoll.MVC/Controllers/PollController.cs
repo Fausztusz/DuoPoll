@@ -44,11 +44,14 @@ namespace DuoPoll.MVC.Controllers
             }
 
             var poll = await _dbContext.Polls
+                .Include(p=>p.User)
                 .FirstOrDefaultAsync(m => m.Url == url);
             if (poll == null)
             {
                 return NotFound();
             }
+
+            ViewData["Owner"] = this.User.GetDisplayName() == poll.User.UserName;
 
             return View(poll);
         }
@@ -70,7 +73,9 @@ namespace DuoPoll.MVC.Controllers
                 return NotFound();
             }
 
-            var poll = await _dbContext.Polls.FirstOrDefaultAsync(p=>p.Url == url);
+            var poll = await _dbContext.Polls
+                .Include(p=>p.Answers)
+                .FirstOrDefaultAsync(p=>p.Url == url);
             if (poll == null)
             {
                 return NotFound();

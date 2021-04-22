@@ -13,6 +13,7 @@ import Hungarian from "vue-tailwind/dist/l10n/hu";
 import English from "vue-tailwind/dist/l10n/default";
 
 import AnswerField from "./components/AnswerField";
+import Vote from "./components/Vote";
 
 window.Vue = require("vue");
 window.axios = axios;
@@ -62,11 +63,25 @@ const settings = {
     't-input': {component: TInput},
     'checkbox': {component: TCheckbox},
     't-select': {component: TSelect},
-    't-button': {component: TButton},
+    't-button': {
+        component: TButton,
+        props: {
+            fixedClasses: 'block px-4 py-2 transition duration-100 ease-in-out focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed',
+            classes: 'text-white bg-blue-500 border border-transparent shadow-sm rounded hover:bg-blue-600',
+            variants: {
+                secondary: 'text-gray-800 bg-white border border-gray-300 shadow-sm hover:text-gray-600',
+                error: 'text-white bg-red-500 border border-transparent rounded shadow-sm hover:bg-red-600',
+                success: 'text-white bg-green-500 border border-transparent rounded shadow-sm hover:bg-green-600',
+                link: 'text-blue-500 underline hover:text-blue-600',
+                dark: 'p-2 lg:px-4 md:mx-2 text-indigo-600 text-center border border-transparent rounded hover:bg-indigo-100 hover:text-indigo-700 transition-colors duration-300',
+            }
+        }
+    },
 }
 
 Vue.use(VueTailwind, settings)
-Vue.component('answer-field',AnswerField)
+Vue.component('answer-field', AnswerField)
+Vue.component('vote', Vote)
 
 Vue.config.devtools = process.env.NODE_ENV === 'development';
 Vue.config.productionTip = process.env.NODE_ENV === 'development';

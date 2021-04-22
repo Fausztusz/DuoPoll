@@ -1,3 +1,4 @@
+@using Newtonsoft.Json
 @model DuoPoll.Dal.Entities.Poll
 @{
     ViewData["Title"] = ViewData["Title"] ?? "Create Poll";
@@ -19,8 +20,8 @@
 
         <t-button class="col-span-2">Submit</t-button>
     </div>
-    @if (Model != null)
-    {
-        <answer-field poll="@Model.Url"></answer-field>
-    }
 </form>
+@if (Model != null)
+{
+    <answer-field :answers='@JsonConvert.SerializeObject(Model.Answers)' url="@Model.Url"></answer-field>
+}

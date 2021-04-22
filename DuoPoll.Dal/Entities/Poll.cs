@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace DuoPoll.Dal.Entities
 {
@@ -37,8 +38,10 @@ namespace DuoPoll.Dal.Entities
         public DateTime Open { get; set; } = DateTime.Now;
         public DateTime Close { get; set; } = DateTime.Now.AddDays(14);
 
+        [InverseProperty("Poll")]
         public virtual ICollection<Answer> Answers { get; set; }
 
+        [JsonIgnore]
         [ForeignKey("UserId")]
         public virtual User User { get; set; }
     }

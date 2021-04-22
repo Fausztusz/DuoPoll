@@ -1,19 +1,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Helpers;
 using DuoPoll.Dal;
 using DuoPoll.Dal.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ControllerBase = Microsoft.AspNetCore.Mvc.ControllerBase;
-using JsonResult = Microsoft.AspNetCore.Mvc.JsonResult;
 using Controller = Microsoft.AspNetCore.Mvc.Controller;
 
 namespace DuoPoll.MVC.Controllers
 {
-    [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class AnswerController : Controller
     {
         private readonly DuoPollDbContext _context;
@@ -54,6 +51,9 @@ namespace DuoPoll.MVC.Controllers
                 return BadRequest();
             }
 
+            var poll = (await _context.Answers.FindAsync(id)).Poll;
+
+            answer.Poll = poll;
             _context.Entry(answer).State = EntityState.Modified;
 
             try

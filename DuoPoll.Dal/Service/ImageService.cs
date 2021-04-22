@@ -29,7 +29,7 @@ namespace DuoPoll.Dal.Service
             var blobClient = containerClient.GetBlobClient(fileName);
 
             blobClient.Upload(file.OpenReadStream(), true);
-            return fileName;
+            return containerClient.Uri.AbsoluteUri+"/"+ fileName;
         }
     }
 }

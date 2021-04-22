@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     newCard() {
-      this.answersList.push({Title: "", Media: ""})
+      this.answersList.push({Title: "", Media: "", Id: null})
     }
   },
 };

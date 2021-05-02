@@ -29,6 +29,8 @@ namespace DuoPoll.Dal
 
             modelBuilder.Entity<Poll>(entity =>
             {
+                entity.Property(p => p.UserId)
+                    .IsRequired();
                 entity.Property(p => p.Public)
                     .HasDefaultValue(false);
                 entity.Property(p => p.Status)

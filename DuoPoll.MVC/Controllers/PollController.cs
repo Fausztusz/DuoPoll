@@ -1,7 +1,9 @@
+using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using DuoPoll.Dal;
+using DuoPoll.Dal.Dto;
 using DuoPoll.Dal.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -11,12 +13,18 @@ using Microsoft.Identity.Web;
 
 namespace DuoPoll.MVC.Controllers
 {
-    [AutoValidateAntiforgeryToken]
     [Authorize]
+    [AutoValidateAntiforgeryToken]
     public class PollController : Controller
     {
         private UserManager<User> _userManager;
         private DuoPollDbContext _dbContext;
+
+        [BindProperty( SupportsGet = true )]
+        public int PollId { get; set; }
+
+        [BindProperty]
+        public PollHeader SelectedPoll { get; set; }
 
         public PollController(UserManager<User> userManager, DuoPollDbContext dbContext)
         {
@@ -34,8 +42,8 @@ namespace DuoPoll.MVC.Controllers
         }
 
         // GET
-        [HttpGet("Poll/Details/{url:length(32)}")]
         [AllowAnonymous]
+        [HttpGet("Poll/Details/{url:length(32)}")]
         public async Task<IActionResult> Details(string url)
         {
             if (url == null)
@@ -91,25 +99,17 @@ namespace DuoPoll.MVC.Controllers
         [Authorize]
         public async Task<IActionResult> Create(Poll poll)
         {
-            var newPoll = new Poll
-            {
-                Name = poll.Name,
-                Public = poll.Public,
-                Open = poll.Open,
-                Close = poll.Close,
-                // User = await _userManager.FindByNameAsync(this.User.GetDisplayName())
-                User = await _userManager.FindByIdAsync(this.User.FindFirst(ClaimTypes.NameIdentifier).Value)
-            };
+            poll.UserId = int.Parse( User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new InvalidOperationException());
 
-            await _dbContext.Polls.AddAsync(newPoll);
+            await _dbContext.Polls.AddAsync(poll);
             await _dbContext.SaveChangesAsync();
 
-            return Redirect("/Poll/Details/" + newPoll.Url);
+            return Redirect("/Poll/Details/" + poll.Url);
         }
 
         [Authorize]
-        [HttpPost("Poll/Edit/{url:length(32)}")]
         [ValidateAntiForgeryToken]
+        [HttpPost("Poll/Edit/{url:length(32)}")]
         public async Task<IActionResult> Update(string url,[Bind("Id,Name,Url,Public,Status,Open,Close")] Poll poll)
         {
 
@@ -117,6 +117,7 @@ namespace DuoPoll.MVC.Controllers
             {
                 return NotFound();
             }
+            poll.UserId = int.Parse( User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new InvalidOperationException());
 
             if (ModelState.IsValid)
             {

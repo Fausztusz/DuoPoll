@@ -25,7 +25,6 @@ const settings = {
         props: {
             locales: {en: English, hu: Hungarian},
             lang: 'hu',
-
             timepicker: true,
             inline: false,
             weekStart: 1,
@@ -89,7 +88,5 @@ Vue.config.productionTip = process.env.NODE_ENV === 'development';
 var app = new Vue({
     el: '#app',
     data: {
-        lastname: '',
-        firstname: '',
     }
 });

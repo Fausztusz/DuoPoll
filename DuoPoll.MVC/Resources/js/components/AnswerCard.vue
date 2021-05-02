@@ -87,7 +87,7 @@ export default {
       axios({
         method: this.id ? "put" : "post",
         url: submitUrl,
-        data: bodyFormData,
+        data: body,
         headers: {"Content-Type": this.id ? "application/json" : "multipart/form-data"}
       })
           .then((res) => {

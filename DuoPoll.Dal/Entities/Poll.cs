@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
@@ -29,6 +29,8 @@ namespace DuoPoll.Dal.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        [AllowNull] // Required in DbContext
+        public int UserId { get; set; }
 
         [MaxLength(50)] [Required] public string Name { get; set; }
         [StringLength(32)] public string Url { get; set; } = Guid.NewGuid().ToString("n");

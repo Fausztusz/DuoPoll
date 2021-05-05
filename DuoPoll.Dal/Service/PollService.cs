@@ -1,52 +1,43 @@
+using System.Linq;
 using System.Threading.Tasks;
 using DuoPoll.Dal.Dto;
 using DuoPoll.Dal.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace DuoPoll.Dal.Service
 {
     public class PollService
     {
         public DuoPollDbContext DbContext { get; }
+        private UserManager<User> _userManager;
 
-        public PollService(DuoPollDbContext dbContext)
+
+        public PollService(UserManager<User> userManager, DuoPollDbContext dbContext)
         {
             DbContext = dbContext;
+            _userManager = userManager;
         }
 
-        /*
-    public async Task AddOrCreate(PollHeader pollHeader)
-    {
-        if(pollHeader.Id == 0)
+        public async Task<Poll> GetPoll(string url)
         {
-            // Új létrehozása
-            var poll = new Poll
+            return await DbContext.Polls.Where(p => p.Url == url).SingleOrDefaultAsync();
+        }
+
+        public async Task AddOrCreate(PollHeader pollHeader, User user)
+        {
+            if (pollHeader.Id == 0)
             {
-                Name = pollHeader.Name,
-                Public = pollHeader.Public,
-                Open = pollHeader.Open,
-                Close = pollHeader.Close,
-                User = await _userManager.FindByNameAsync(this.User.GetDisplayName())
-            };
-
-            DbContext.Categories.Add(category);
-            await DbContext.SaveChangesAsync();
-        }
-        else
-        {
-            // Módosítás
-            var category = DbContext.Categories.Single(c => c.Id == categoryHeader.Id);
-
-            category.Name = categoryHeader.Name;
-            category.Order = categoryHeader.Order;
-            category.ParentCategoryId = categoryHeader.ParentCategoryId;
-
-            await DbContext.SaveChangesAsync();
-
-    }
-        }*/
-
-        public class User
-        {
+                // Új létrehozása
+                var poll = new Poll
+                {
+                    Name = pollHeader.Name,
+                    Public = pollHeader.Public,
+                    Open = pollHeader.Open,
+                    Close = pollHeader.Close,
+                    // User = await _userManager.FindByNameAsync(this.User.GetDisplayName())
+                };
+            }
         }
     }
 }

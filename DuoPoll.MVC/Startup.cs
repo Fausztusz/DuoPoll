@@ -50,6 +50,14 @@ namespace DuoPoll.MVC
                 o.HeaderName = "X-CSRF-TOKEN";
             });
 
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
             services.ConfigureApplicationCookie(options =>
             {
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
@@ -84,6 +92,8 @@ namespace DuoPoll.MVC
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseSession();
 
             Web.Route(app);
         }

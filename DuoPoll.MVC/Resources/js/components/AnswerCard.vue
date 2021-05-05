@@ -88,13 +88,19 @@ export default {
         method: this.id ? "put" : "post",
         url: submitUrl,
         data: body,
-        headers: {"Content-Type": this.id ? "application/json" : "multipart/form-data"}
+        // headers: {"Content-Type": this.id ? "application/json" : "multipart/form-data"}
+        headers: {"Content-Type": "application/json"}
       })
           .then((res) => {
+            this.id = res.data.id
+            this.animateBorder(["ring-green-800", "ring-green-700", "ring-green-600", "ring-green-500"],3)
           })
           .catch((error) => {
+            console.log(error);
+            this.animateBorder(["ring-red-800", "ring-red-700", "ring-red-600", "ring-red-500"])
           })
           .finally(() => {
+            console.log("finally")
           })
 
     },
@@ -108,20 +114,24 @@ export default {
       this.media = response.url
     },
     errorResponse(file, message, xhr) {
-      this.errorClass = "ring-6 ring-red-800 ring-opacity-100"
+      this.animateBorder(["ring-red-800", "ring-red-700", "ring-red-600", "ring-red-500"])
+    },
+
+    animateBorder(color, speed = 1) {
+      this.errorClass = `ring-6 ${color[0]} ring-opacity-100`
       setTimeout(() => {
-        this.errorClass = "ring-6 ring-red-700 ring-opacity-100";
+        this.errorClass = `ring-6 ${color[1]} ring-opacity-100`;
         setTimeout(() => {
-          this.errorClass = "ring-8 ring-red-600 ring-opacity-100";
+          this.errorClass = `ring-8 ${color[2]} ring-opacity-100`;
           setTimeout(() => {
-            this.errorClass = "ring-8 ring-red-500 ring-opacity-100";
+            this.errorClass = `ring-8 ${color[3]} ring-opacity-100`;
             setTimeout(() => {
               this.errorClass = ""
-            }, 1000)
-          }, 1000)
-        }, 1000)
-      }, 1000)
-    },
+            }, 1000 / speed)
+          }, 1000 / speed)
+        }, 1000 / speed)
+      }, 1000 / speed)
+    }
   },
   // watch: {
   //   dropdown: function (val) {

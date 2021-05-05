@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using DuoPoll.Dal;
 using DuoPoll.Dal.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -14,11 +15,15 @@ namespace DuoPoll.MVC.Controllers
 {
     internal class PollUrl
     {
-        private PollUrl(){}
+        private PollUrl()
+        {
+        }
+
         public string Url { get; set; }
     }
+
     [ApiController]
-    [Route("api/[controller]")]
+    [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     public class AnswerController : Controller
     {
         private readonly DuoPollDbContext _context;
@@ -36,23 +41,61 @@ namespace DuoPoll.MVC.Controllers
         }
 
         // GET: api/Answer/5
-        [Microsoft.AspNetCore.Mvc.HttpGet("{id}")]
-        public async Task<ActionResult<Answer>> GetAnswer(int id)
+        [Microsoft.AspNetCore.Mvc.HttpGet("{url:length(32)}")]
+        public async Task<ActionResult<IEnumerable<Answer>>> GetAnswer(string url)
         {
-            var answer = await _context.Answers.FindAsync(id);
+            var poll = await _context.Polls
+                .AsNoTracking()
+                .Where(p => p.Url == url)
+                .FirstOrDefaultAsync();
 
-            if (answer == null)
+            var answers = await _context.Answers
+                .Where(a => a.PollId == poll.Id)
+                .Include(a => a.Choices)
+                .Include(a => a.Losses)
+                .ToListAsync();
+
+            if (answers.Count < 2) return StatusCode(422, "Not enough answers");
+
+            var userId = int.Parse(
+                User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new InvalidOperationException()
+            );
+
+            const int limit = 20;
+            int left = 0, right = 0;
+            for (var i = 0; i < limit; i++)
             {
-                return NotFound();
+                left = new Random().Next(1, answers.Count);
+                do
+                {
+                    right = new Random().Next(1, answers.Count);
+                } while (left == right);
+
+                var exists = await _context.Choices
+                    .Where(c =>
+                        (c.AnswerId == left && c.LoserId == right)
+                        || (c.AnswerId == right && c.LoserId == left)
+                        && c.UserId == userId)
+                    .FirstOrDefaultAsync();
+
+                if (exists == null) break;
+                if (i == limit - 1) return StatusCode(404, "No new question found");
             }
 
-            return answer;
+            HttpContext.Session.SetInt32("left", left);
+            HttpContext.Session.SetInt32("right", right);
+
+            return Json(new
+            {
+                left = new {Title = answers[left].Title, Media = answers[left].Media},
+                right = new {Title = answers[right].Title, Media = answers[right].Media}
+            });
         }
 
         // PUT: api/Answer/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<ActionResult<Answer>> PutAnswer(int id,object json)
+        public async Task<ActionResult<Answer>> PutAnswer(int id, object json)
         {
             // I hate this
             var answer = JsonConvert.DeserializeObject<Answer>(json.ToString());
@@ -74,45 +117,30 @@ namespace DuoPoll.MVC.Controllers
 
             answer.PollId = poll.Id;
             _context.Entry(answer).State = EntityState.Modified;
-            try
-            {
-                _context.Answers.Update(answer);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AnswerExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
 
-            return Ok();
+            _context.Answers.Update(answer);
+            await _context.SaveChangesAsync();
+
+            return Json("Ok");
         }
 
         // POST: api/Answer
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Answer>> PostAnswer()
+        public async Task<ActionResult<Answer>> PostAnswer(object json)
         {
+            var answer = JsonConvert.DeserializeObject<Answer>(json.ToString());
+            var url = JsonConvert.DeserializeObject<PollUrl>(json.ToString());
+
             var poll = await _context.Polls
                 .Include(p => p.Answers)
-                .FirstOrDefaultAsync(p => p.Url == Request.Form["Url"].ToString());
+                .FirstOrDefaultAsync(p => p.Url == url.Url);
 
             if (poll == null || !CanEdit(poll))
             {
                 return Unauthorized();
             }
 
-            var answer = new Answer
-            {
-                Title = Request.Form["Title"],
-                Media = Request.Form["Media"],
-            };
             poll.Answers.Add(answer);
             await _context.SaveChangesAsync();
 
@@ -120,7 +148,7 @@ namespace DuoPoll.MVC.Controllers
         }
 
         // DELETE: api/Answer/5
-        [Microsoft.AspNetCore.Mvc.HttpDelete("{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAnswer(int id)
         {
             var answer = await _context.Answers.FindAsync(id);
@@ -142,7 +170,8 @@ namespace DuoPoll.MVC.Controllers
 
         private bool CanEdit(Poll poll)
         {
-            return poll.UserId == int.Parse( User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new InvalidOperationException());
+            return poll.UserId == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ??
+                                            throw new InvalidOperationException());
         }
     }
 }

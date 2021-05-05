@@ -9,9 +9,11 @@ namespace DuoPoll.Dal.Dto
         public int Id { get; set; }
         public string Title { get; set; }
         public string Media { get; set; }
+    }
 
-        public Poll Poll { get; set; }
-        public List<Choice> Choices { get; set; }
-        public List<Choice> Losses { get; set; }
+    public class AnswerChoiceHeader
+    {
+        public List<ChoiceHeader> Choices { get; set; }
+        public List<ChoiceHeader> Losses { get; set; }
     }
 }

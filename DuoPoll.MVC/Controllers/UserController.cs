@@ -41,6 +41,7 @@ namespace DuoPoll.MVC.Controllers
             return View("~/Views/Poll/Index.cshtml",
                 _dbContext.Polls.Where(p =>
                         p.User.Id == this.User.FindFirst(ClaimTypes.NameIdentifier).Value.AsInt())
+                    .Include(p => p.Answers)
                     .Include(p => p.User)
                     .ToList());
         }

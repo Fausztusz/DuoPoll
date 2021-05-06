@@ -38,7 +38,9 @@ namespace DuoPoll.MVC.Controllers
         {
             return View(await _dbContext.Polls
                 .Where(p => p.Public == true)
-                .Include(p => p.User).ToListAsync());
+                .Include(p => p.Answers)
+                .Include(p => p.User)
+                .ToListAsync());
         }
 
         // GET

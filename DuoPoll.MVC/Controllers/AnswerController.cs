@@ -22,6 +22,15 @@ namespace DuoPoll.MVC.Controllers
         public string Url { get; set; }
     }
 
+    internal class Vote
+    {
+        private Vote()
+        {
+        }
+
+        public string Side { get; set; }
+    }
+
     [ApiController]
     [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     public class AnswerController : Controller
@@ -41,7 +50,7 @@ namespace DuoPoll.MVC.Controllers
         }
 
         // GET: api/Answer/5
-        [Microsoft.AspNetCore.Mvc.HttpGet("{url:length(32)}")]
+        [HttpGet("{url:length(32)}")]
         public async Task<ActionResult<IEnumerable<Answer>>> GetAnswer(string url)
         {
             var poll = await _context.Polls
@@ -73,8 +82,8 @@ namespace DuoPoll.MVC.Controllers
 
                 var exists = await _context.Choices
                     .Where(c =>
-                        (c.AnswerId == left && c.LoserId == right)
-                        || (c.AnswerId == right && c.LoserId == left)
+                        (c.AnswerId == answers[left].Id && c.LoserId == answers[right].Id)
+                        || (c.AnswerId == answers[right].Id && c.LoserId == answers[left].Id)
                         && c.UserId == userId)
                     .FirstOrDefaultAsync();
 
@@ -82,14 +91,52 @@ namespace DuoPoll.MVC.Controllers
                 if (i == limit - 1) return StatusCode(404, "No new question found");
             }
 
-            HttpContext.Session.SetInt32("left", left);
-            HttpContext.Session.SetInt32("right", right);
+            HttpContext.Session.SetInt32("left", answers[left].Id);
+            HttpContext.Session.SetInt32("right", answers[right].Id);
 
             return Json(new
             {
                 left = new {Title = answers[left].Title, Media = answers[left].Media},
                 right = new {Title = answers[right].Title, Media = answers[right].Media}
             });
+        }
+
+        [HttpPost("{url:length(32)}/Vote")]
+        public async Task<IActionResult> PostVote(string url, object json)
+        {
+            var vote = JsonConvert.DeserializeObject<Vote>(json.ToString());
+
+            var left = HttpContext.Session.GetInt32("left");
+            var right = HttpContext.Session.GetInt32("right");
+
+            if (left == 0 || left == null || right == 0 || right == null || left == right)
+            {
+                return BadRequest();
+            }
+
+            var choice = new Choice();
+            if (vote.Side == "left")
+            {
+                choice.AnswerId = (int) left;
+                choice.LoserId = (int) right;
+                choice.UserId = GetUserId();
+            }
+            else if (vote.Side == "right")
+            {
+                choice.AnswerId = (int) left;
+                choice.LoserId = (int) right;
+                choice.UserId = GetUserId();
+            }
+            else
+                return BadRequest();
+
+            await _context.Choices.AddAsync(choice);
+            await _context.SaveChangesAsync();
+
+            HttpContext.Session.SetInt32("left", 0);
+            HttpContext.Session.SetInt32("right", 0);
+
+            return Json("Ok");
         }
 
         // PUT: api/Answer/5
@@ -168,10 +215,15 @@ namespace DuoPoll.MVC.Controllers
             return _context.Answers.Any(e => e.Id == id);
         }
 
+        private int GetUserId()
+        {
+            return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                             ?? throw new InvalidOperationException());
+        }
+
         private bool CanEdit(Poll poll)
         {
-            return poll.UserId == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ??
-                                            throw new InvalidOperationException());
+            return poll.UserId == GetUserId();
         }
     }
 }

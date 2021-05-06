@@ -7,9 +7,9 @@ namespace DuoPoll.Dal.Entities
     {
         public Choice()
         {
-            Answer = new Answer();
-            User = new User();
-            Loser = new Answer();
+            // Answer = new Answer();
+            // User = new User();
+            // Loser = new Answer();
         }
 
         [Key]

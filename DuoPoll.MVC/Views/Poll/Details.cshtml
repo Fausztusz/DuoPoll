@@ -5,8 +5,8 @@
 }
 
 <div class="grid grid-cols-12 text-center align-baseline gap-5 md:gap-10 max-w-sm md:max-w-4xl mx-auto">
-    <div class="@Html.DisplayName((bool) ViewData["Owner"] ? "col-span-10 text-right" : "col-span-12") font-body text-3xl md:text-5xl">
-        Some interesting question?
+    <div class="@Html.DisplayName((bool) ViewData["Owner"] ? "col-span-10" : "col-span-12") font-body text-3xl md:text-5xl">
+        @Model.Name
     </div>
     @if ((bool) ViewData["Owner"])
     {

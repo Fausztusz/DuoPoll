@@ -2,6 +2,9 @@
 
   <div class="grid grid-cols-2 text-center align-baseline gap-5 md:gap-10 max-w-sm md:max-w-4xl mx-auto">
     <div v-if="errorMessage" class="col-span-2 text-3xl text-red-900">{{ errorMessage }}</div>
+    <a class="col-span-2" href="/Poll">
+      <t-button class="mx-auto" v-if="newGame">Start new game</t-button>
+    </a>
 
     <div v-if="isLoaded" class="col-span-2 md:col-span-1 h-3xl bg-gray-300 dark:bg-gray-600 rounded-lg">
       <div class="grid grid-cols-1 font-display items-end m-3 md:m-8 gap-y-3 md:gap-y-20">
@@ -10,7 +13,8 @@
         </div>
         <div class="text-4xl">{{ answers.left.title }}</div>
         <div>
-          <button @click="vote('left')" class="bg-gray-500 rounded-full text-2xl py-2 px-4 md:px-8 md:py-4 ">Select</button>
+          <button @click="vote('left')" class="bg-gray-500 rounded-full text-2xl py-2 px-4 md:px-8 md:py-4 ">Select
+          </button>
         </div>
       </div>
     </div>
@@ -23,7 +27,8 @@
         </div>
         <div class="text-4xl">{{ answers.right.title }}</div>
         <div>
-          <button @click="vote('right')" class="bg-gray-500 rounded-full text-2xl py-2 px-4 md:px-8 md:py-4 ">Select</button>
+          <button @click="vote('right')" class="bg-gray-500 rounded-full text-2xl py-2 px-4 md:px-8 md:py-4 ">Select
+          </button>
         </div>
       </div>
     </div>
@@ -39,6 +44,7 @@ export default {
     return {
       answers: {},
       isLoaded: false,
+      newGame: false,
       errorMessage: null,
     }
   },
@@ -47,8 +53,8 @@ export default {
       if (side === "left" || side === "right") {
         axios({
           method: "POST",
-          url: this.url,
-          data: {vote: side}
+          url: `${this.url}/Vote`,
+          data: {Side: side}
         }).then((res) => {
         })
             .catch((error) => {
@@ -69,8 +75,10 @@ export default {
         };
         this.isLoaded = true;
       }).catch((error) => {
-        this.errorMessage = error.message
-        console.error(error)
+        this.errorMessage = error.response.data
+        if (error.response.status === 404) {
+          this.newGame = true;
+        }
       }).finally(() => {
       })
     }

@@ -18,7 +18,7 @@ namespace DuoPoll.MVC.Controllers
     public class PollController : Controller
     {
         private UserManager<User> _userManager;
-        private DuoPollDbContext _dbContext;
+        private readonly DuoPollDbContext _dbContext;
 
         [BindProperty( SupportsGet = true )]
         public int PollId { get; set; }
@@ -70,7 +70,8 @@ namespace DuoPoll.MVC.Controllers
         [Authorize]
         public IActionResult Create()
         {
-            return View("~/Views/Poll/Edit.cshtml");
+            var poll = new Poll();
+            return View("~/Views/Poll/Edit.cshtml",poll);
         }
 
         // GET

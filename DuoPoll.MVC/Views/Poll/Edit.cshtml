@@ -10,7 +10,7 @@
         <t-input name="Name" value="@Model.Name" required></t-input>
 
         <div class="col-span-1">Public:</div>
-        <checkbox name="Public" @Html.DisplayText(Model.Public ? "checked" : "")></checkbox>
+        <checkbox name="Public" @Html.DisplayText(Model.Public ? "checked" : " ")></checkbox>
 
         <div class="col-span-1">Open:</div>
         <date-picker name="Open" lang="en" value="@Model.Open"></date-picker>

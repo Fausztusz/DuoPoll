@@ -25,7 +25,7 @@ export default {
       required: true
     },
     answers: {
-      type: Array,
+      type: Array|null,
       required: true
     },
   },
@@ -35,7 +35,8 @@ export default {
     }
   },
   mounted() {
-    this.answersList = this.answers;
+    if (this.answers)
+      this.answersList = this.answers;
   },
   methods: {
     newCard() {

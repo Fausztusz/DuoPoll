@@ -80,15 +80,19 @@ export default {
   methods: {
     save() {
       let body = {
-        'Id': this.id,
         'Title': this.title,
         'Media': this.media,
         'Url': this.url,
       }
+      let submitUrl = "/api/Answer";
+      if (this.id) {
+        body.Id = this.id;
+        submitUrl += `/${this.id}`
+      }
 
       axios({
         method: this.id ? "put" : "post",
-        url: `/api/Answer/${this.id}`,
+        url: submitUrl,
         data: body,
         headers: {"Content-Type": "application/json"}
       })
@@ -112,6 +116,7 @@ export default {
     },
     successResponse(file, response) {
       console.log(response);
+      console.log(response.url);
       this.media = response.url
     },
     errorResponse(file, message, xhr) {

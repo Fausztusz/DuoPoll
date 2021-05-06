@@ -26,12 +26,13 @@ jobs:
       run: dotnet build --configuration Release
       
     - name: Build JS
+      working-directory: ./DuoPoll.MVC
       env:
           NODE_ENV: production 
       run: |
-          npm install --include=dev --prefix DuoPoll.MVC/
-          npm run prod --prefix DuoPoll.MVC/
-          npx tailwindcss-cli@latest build ./DuoPoll.MVC/Resources/css/app.css -o ./DuoPoll.MVC/wwwroot/lib/tailwind.prod.css
+          npm install --include=dev
+          npm run prod
+          npx tailwindcss-cli@latest build ./Resources/css/app.css -o ./wwwroot/lib/tailwind.prod.css
 
     - name: dotnet publish
       run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp

@@ -4,14 +4,16 @@ using DuoPoll.Dal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DuoPoll.Dal.Migrations
 {
     [DbContext(typeof(DuoPollDbContext))]
-    partial class DuoPollDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210506125109_AddAnon")]
+    partial class AddAnon
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

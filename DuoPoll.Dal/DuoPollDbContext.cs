@@ -20,6 +20,12 @@ namespace DuoPoll.Dal
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            if (!optionsBuilder.IsConfigured)
+            {
+                // TODO Ez dinamikusan kell olvasni?
+                optionsBuilder.UseSqlServer(
+                    "Server=tcp:sql-server-for-my-homework.database.windows.net,1433;Initial Catalog=DuoPoll;Persist Security Info=False;User ID=sqladmin;Password=nyvUGG53RKQvRhM#3Y#r;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

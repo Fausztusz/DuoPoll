@@ -147,15 +147,16 @@ namespace DuoPoll.MVC.Controllers
             // I hate this
             var answer = JsonConvert.DeserializeObject<Answer>(json.ToString());
             var url = JsonConvert.DeserializeObject<PollUrl>(json.ToString());
-            if (id != answer.Id)
-            {
-                return BadRequest();
-            }
 
             var poll = await _context.Polls
                 .AsNoTracking()
                 .Include(p => p.Answers)
                 .FirstOrDefaultAsync(p => p.Url == url.Url);
+
+            if (id != answer.Id || poll == null)
+            {
+                return BadRequest();
+            }
 
             if (!CanEdit(poll))
             {

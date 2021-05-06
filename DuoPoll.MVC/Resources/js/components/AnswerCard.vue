@@ -79,21 +79,22 @@ export default {
 
   methods: {
     save() {
-      let bodyFormData = new FormData();
-      bodyFormData.append('Title', this.title);
-      bodyFormData.append('Media', this.media);
-      bodyFormData.append('PollId', 5);
+      let body = {
+        'Id': this.id,
+        'Title': this.title,
+        'Media': this.media,
+        'Url': this.url,
+      }
 
       axios({
         method: this.id ? "put" : "post",
-        url: submitUrl,
+        url: `/api/Answer/${this.id}`,
         data: body,
-        // headers: {"Content-Type": this.id ? "application/json" : "multipart/form-data"}
         headers: {"Content-Type": "application/json"}
       })
           .then((res) => {
             this.id = res.data.id
-            this.animateBorder(["ring-green-800", "ring-green-700", "ring-green-600", "ring-green-500"],3)
+            this.animateBorder(["ring-green-800", "ring-green-700", "ring-green-600", "ring-green-500"], 3)
           })
           .catch((error) => {
             console.log(error);

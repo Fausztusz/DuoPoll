@@ -23,6 +23,15 @@ jobs:
 
     - name: Build with dotnet
       run: dotnet build --configuration Release
+      
+    - name: Build css
+      uses: mikeal/npx@1.0.0
+      
+    - name: Build JS
+      run: |
+          npm install --include=dev --prefix DuoPoll.MVC/
+          npm run prod --prefix DuoPoll.MVC/
+          NODE_ENV=production npx tailwindcss-cli@latest build ./DuoPoll.MVC/Resources/css/app.css -o ./DuoPoll.MVC/wwwroot/lib/tailwind.prod.css
 
     - name: dotnet publish
       run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp

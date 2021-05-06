@@ -25,12 +25,18 @@ jobs:
     - name: Build with dotnet
       run: dotnet build --configuration Release
       
-    - name: Build JS
-      working-directory: ./DuoPoll.MVC
+    - uses: bahmutov/npm-install@v1
       env:
           NODE_ENV: production 
+      with:
+          useLockFile: false
+          useRollingCache: true
+          working-directory: ./DuoPoll.MVC
+          install-command: npm install --include=dev
+          
+    - name: Build JS
+      working-directory: ./DuoPoll.MVC
       run: |
-          npm install --include=dev
           npm run prod
           npx tailwindcss-cli@latest build ./Resources/css/app.css -o ./wwwroot/lib/tailwind.prod.css
 

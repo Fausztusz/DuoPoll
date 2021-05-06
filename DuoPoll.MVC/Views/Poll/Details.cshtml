@@ -1,6 +1,6 @@
 @model DuoPoll.Dal.Entities.Poll
 @{
-    ViewData["Title"] = "Polls";
+    ViewData["Title"] = T["Polls"];
     ViewData["Current"] = "polls.show";
 }
 
@@ -13,7 +13,7 @@
         <div class="col-span-2 font-body text-lg md:text-xl flex justify-end self-end">
             <a asp-controller="Poll" asp-action="Edit" asp-route-url="@Model.Url">
                 <t-button variant="dark">
-                    Edit
+                    @T["Edit"]
                 </t-button>
             </a>
         </div>

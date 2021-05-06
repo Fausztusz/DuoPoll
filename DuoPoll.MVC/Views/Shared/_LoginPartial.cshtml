@@ -7,12 +7,12 @@
 {
     <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage"
        class="p-2 lg:px-4 md:mx-2 text-indigo-600 text-center border border-transparent rounded hover:bg-indigo-100 hover:text-indigo-700 transition-colors duration-300">
-        Hello @User.Identity.Name
+        @T["Hello"] @User.Identity.Name
     </a>
     <div>
         <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new {area = ""})">
             <button type="submit" class="p-2 lg:px-4 md:mx-2 text-indigo-600 text-center border border-transparent rounded hover:bg-indigo-100 hover:text-indigo-700 transition-colors duration-300">
-                Logout
+                @T["Logout"]
             </button>
         </form>
     </div>
@@ -22,10 +22,10 @@ else
     <a asp-area="Identity" asp-page="/Account/Login"
        class="p-2 lg:px-4 md:mx-2 text-center border border-transparent rounded transition-colors duration-300
             text-indigo-600 hover:bg-indigo-100 hover:text-indigo-700">
-        Login
+        @T["Login"]
     </a>
     <a asp-area="Identity" asp-page="/Account/Register"
        class="p-2 lg:px-4 md:mx-2 text-indigo-600 text-center border border-solid border-indigo-600 rounded hover:bg-indigo-600 hover:text-white transition-colors duration-300 mt-1 md:mt-0 md:ml-1">
-        Signup
+        @T["Signup"]
     </a>
 }

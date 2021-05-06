@@ -1,26 +1,28 @@
 @using DuoPoll.Dal.Entities
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer T
 @{
-    ViewData["Title"] = ViewData["Title"] ?? "Polls";
+    ViewData["Title"] = ViewData["Title"] ?? T["Polls"];
     ViewData["Current"] = ViewData["Current"] ?? "polls.index";
 }
 
-@foreach (Poll poll  in Model)
-{
-    <a asp-controller="Poll" asp-action="Details" asp-route-url="@poll.Url"
-       class="grid grid-cols-12 m-4 filter drop-shadow-lg hover:drop-shadow-2xl cursor-pointer">
-        <div class="col-span-12 p-5 bg-white dark:bg-gray-600 dark:hover:bg-gray-700 hover:bg-indigo-200 bg-indigo-100 overflow-hidden shadow sm:rounded-lg">
-            <div class="grid grid-cols-12">
-                <div class="col-span-10">
-                    <div class="grid grid-rows-2 align-text-middle dark:text-gray-200 text-gray-900">
-                        <div class="text-6xl row-span-1 h-full">@poll.Name</div>
-                        <div class="row-span-1 h-full pt-5">By: @poll.User.UserName</div>
+<div class="grid grid-cols-2">
+    @foreach (Poll poll  in Model)
+    {
+        <a asp-controller="Poll" asp-action="Details" asp-route-url="@poll.Url"
+           class="col-span-2 lg:col-span-1 m-4 filter drop-shadow-lg hover:drop-shadow-2xl cursor-pointer">
+            <div class="grid grid-cols-5 p-4 bg-white dark:bg-gray-600 dark:hover:bg-gray-700 hover:bg-indigo-200 bg-indigo-100 overflow-hidden shadow sm:rounded-lg">
+                <div class="col-span-3">
+                    <div class="flex flex-col h-full justify-between align-text-middle dark:text-gray-200 text-gray-900">
+                        <div class="text-3xl">@poll.Name</div>
+                        <div>@poll.Answers.Count @T["options"]</div>
+                        <div>@T["By: "]@poll.User.UserName</div>
                     </div>
                 </div>
                 <div class="col-span-2">
-                    <img alt="Poll thumbnail" src="@poll.Answers.FirstOrDefault()?.Media" style="width: 100%;height: 100%;object-fit: contain;">
+                    <img alt="Poll thumbnail" src='@(poll.Answers.FirstOrDefault()?.Media??"/images/placeholder.png")' style="width: 100%;height: 150px;object-fit: cover;">
                 </div>
-
             </div>
-        </div>
-    </a>
-}
+        </a>
+    }
+</div>

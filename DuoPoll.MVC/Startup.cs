@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using Azure.Storage.Blobs;
 using DuoPoll.Dal;
 using DuoPoll.Dal.Entities;
@@ -12,6 +14,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Azure;
 
 namespace DuoPoll.MVC
@@ -66,7 +70,23 @@ namespace DuoPoll.MVC
             });
 
             services.AddRazorPages();
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
+
+            services.AddPortableObjectLocalization();
+            services.Configure<RequestLocalizationOptions>(o =>
+            {
+                var supportedCultures = new List<CultureInfo>
+                {
+                    new CultureInfo("en-US"),
+                    new CultureInfo("en"),
+                    new CultureInfo("hu-HU"),
+                    new CultureInfo("hu"),
+                };
+                o.DefaultRequestCulture = new RequestCulture("en-US");
+                o.SupportedCultures = supportedCultures;
+                o.SupportedUICultures = supportedCultures;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -89,6 +109,8 @@ namespace DuoPoll.MVC
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseRequestLocalization();
 
             app.UseAuthentication();
             app.UseAuthorization();

@@ -53,24 +53,24 @@
                 <a asp-controller="Poll" asp-action="Index"
                    class="p-2 lg:px-4 md:mx-2  @RenderIf(ViewData["Current"] != null && ViewData["Current"].ToString() == "polls.index", "text-white bg-indigo-600", "text-gray-600")
                      rounded hover:bg-gray-200 hover:text-gray-700 transition-colors duration-300">
-                    Polls
+                    @T["Polls"]
                 </a>
                 @if (SignInManager.IsSignedIn(User))
                 {
                     <a asp-controller="User" asp-action="Poll"
                        class="p-2 lg:px-4 md:mx-2   @RenderIf(ViewData["Current"] != null && ViewData["Current"].ToString() == "user.polls", "text-white bg-indigo-600", "text-gray-600")
                      rounded hover:bg-gray-200 hover:text-gray-700 transition-colors duration-300">
-                        My Polls
+                        @T["My Polls"]
                     </a>
                     <a asp-controller="Poll" asp-action="Create"
                        class="p-2 lg:px-4 md:mx-2   @RenderIf(ViewData["Current"] != null && ViewData["Current"].ToString() == "polls.create", "text-white bg-indigo-600", "text-gray-600")
                      rounded hover:bg-gray-200 hover:text-gray-700 transition-colors duration-300">
-                        Create
+                        @T["Create"]
                     </a>
                     <a asp-controller="Poll" asp-action="Statistics"
                        class="p-2 lg:px-4 md:mx-2 @RenderIf(ViewData["Current"] != null && ViewData["Current"].ToString() == "polls.statistics", "text-white bg-indigo-600", "text-gray-600")
                         rounded hover:bg-gray-200 hover:text-gray-700 transition-colors duration-300">
-                        Statistics
+                        @T["Statistics"]
                     </a>
                 }
                 <partial name="_LoginPartial"/>
@@ -94,8 +94,8 @@
                 <p>&copy; <strong> @DateTime.Now.Year - DuoPoll</strong></p>
             </div>
             <div class="md:flex-1 md:px-4 text-center md:text-right">
-                <a asp-controller="Home" asp-action="ToS" class="py-2 px-4 inline-block hover:underline">Terms of Service</a>
-                <a asp-controller="Home" asp-action="Privacy" class="py-2 px-4 inline-block hover:underline">Privacy Policy</a>
+                <a asp-controller="Home" asp-action="ToS" class="py-2 px-4 inline-block hover:underline">@T["Terms of Service"]</a>
+                <a asp-controller="Home" asp-action="Privacy" class="py-2 px-4 inline-block hover:underline">@T["Privacy Policy"]</a>
             </div>
         </div>
     </div>

@@ -24,9 +24,6 @@ jobs:
     - name: Build with dotnet
       run: dotnet build --configuration Release
       
-    - name: Build css
-      uses: mikeal/npx@1.0.0
-      
     - name: Build JS
       run: |
           npm install --include=dev --prefix DuoPoll.MVC/

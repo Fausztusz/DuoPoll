@@ -13,6 +13,73 @@ msgstr ""
 "X-Poedit-Basepath: Views\n"
 "X-Poedit-SearchPath-0: .\n"
 
+# Views
+msgid "Home Page"
+msgstr "Kezdőlap"
+
+msgid "Create a new poll"
+msgstr "Új szavazás létrehozása"
+
+msgid "Browse polls"
+msgstr "Szavazások böngészése"
+
+msgid "Check out the poll results"
+msgstr "Szavazás eredmények megnézése"
+
+msgid "Edit"
+msgstr "Szerkesztés"
+
+msgid "Create Poll"
+msgstr "Szavazás Létrehozása"
+
+msgid "Public:"
+msgstr "Nyilvános:"
+
+msgid "Open:"
+msgstr "Elérhető:"
+
+msgid "Close:"
+msgstr "Befejezés:"
+
+msgid "Error"
+msgstr "Hiba"
+
+msgid "Error."
+msgstr "Hiba."
+
+msgid "An error occurred while processing your request."
+msgstr "Hiba a kérés feldolgozása közben."
+
+msgid "Request ID:"
+msgstr "Kérés ID:"
+
+msgid "Development Mode"
+msgstr "Fejlesztési mód"
+
+msgid "Terms of Service"
+msgstr "Felhasználási feltételek"
+
+msgid "Privacy Policy"
+msgstr "Adatvédelem"
+
+msgid "Privacy"
+msgstr "Adatvédelem"
+
+msgid "Hello"
+msgstr "Üdv"
+
+msgid "Logout"
+msgstr "Kijelentkezés"
+
+msgid "Login"
+msgstr "Bejelentkezés"
+
+msgid "Signup"
+msgstr "Regisztráció"
+
+msgid "Use this page to detail your site's privacy policy."
+msgstr "Valami valami adatvédelmi tájékoztató."
+
 msgid "By: "
 msgstr "Készítette: "
 
@@ -30,3 +97,82 @@ msgstr "Létrehozás"
 
 msgid "Statistics"
 msgstr "Statisztikák"
+
+# LOGIN
+msgid "Access denied"
+msgstr "Hozzáférés megtagadva"
+
+msgid "You do not have access to this resource."
+msgstr "Nincs jogosultságod az erőforrás eléréséhez."
+
+msgid "Confirm email"
+msgstr "Erősítsd meg az emailed"
+
+msgid "Confirm email change"
+msgstr "Erősítsd meg az email cím változtatást"
+
+msgid "Forgot your password?"
+msgstr "Elfelejtetted a jelszavad?"
+
+msgid "Enter your email."
+msgstr "Írd be az emailcímed."
+
+msgid "Submit"
+msgstr "Mentés"
+
+msgid "Forgot password confirmation"
+msgstr "Elfelejtett jelszó megerősítése"
+
+msgid "Please check your email to reset your password."
+msgstr "Nézd meg az emailjeidet a jelszó helyreállításához."
+
+msgid "Locked out"
+msgstr "Letiltva"
+
+msgid "This account has been locked out, please try again later."
+msgstr "A fiók le lett tiltva. Próbálja meg később."
+
+msgid "Log in"
+msgstr "Bejelentkezés"
+
+msgid "Register as a new user"
+msgstr "Új fiók létrehozása"
+
+msgid "Resend email confirmation"
+msgstr "Megerősítő email újraküldése"
+
+msgid "Log out"
+msgstr "Kijelentkezés"
+
+msgid "Click here to Logout"
+msgstr "Kattints ide a kijelentkezéshez"
+
+msgid "You have successfully logged out of the application."
+msgstr "Sikeresen kijelentkeztél."
+
+msgid "Register"
+msgstr "Regisztráció"
+
+msgid "Create a new account."
+msgstr "Új fiók létrehozása."
+
+msgid "Resend"
+msgstr "Újraküldés"
+
+msgid "Reset password"
+msgstr "Jelszó visszaállítás"
+
+msgid "Reset your password."
+msgstr "Állítsd vissza a jelszavad."
+
+msgid "Remember me"
+msgstr "Maradjak bejelentkezve"
+
+msgid "Reset"
+msgstr "Visszaállítás"
+
+msgid "Reset password confirmation"
+msgstr "Jelszó visszaállítás megerősítése"
+
+msgid "Your password has been reset. Please <a asp-page=\"./Login\">click here to log in</a>."
+msgstr "Visszaállítottuk a jelszavad. Kattints<a asp-page=\"./Login\">ide a bejelentkezéshez</a>."

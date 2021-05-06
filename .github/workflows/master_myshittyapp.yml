@@ -25,18 +25,26 @@ jobs:
     - name: Build with dotnet
       run: dotnet build --configuration Release
       
-    - uses: bahmutov/npm-install@v1
+    # caching NPM dependencies
+    # https://github.com/actions/cache/blob/master/examples.md#node---npm
+    - uses: actions/cache@v1
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+            
+    - uses: actions/setup-node@v2
       env:
           NODE_ENV: production 
       with:
-          useLockFile: false
-          useRollingCache: true
+          node-version: '15'
           working-directory: ./DuoPoll.MVC
-          install-command: npm install --include=dev
           
     - name: Build JS
       working-directory: ./DuoPoll.MVC
       run: |
+          npm install --include=dev
           npm run prod
           npx tailwindcss-cli@latest build ./Resources/css/app.css -o ./wwwroot/lib/tailwind.prod.css
 

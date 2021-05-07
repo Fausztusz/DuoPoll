@@ -88,28 +88,60 @@
 </div>
 
 <footer class="border-t border-solid border-gray-900 mt-4 py-4">
-    <div class="container px-4 mx-auto">
-        <div class="md:flex md:-mx-4 md:items-center">
-            <div class="md:flex-1 md:px-4 text-center md:text-left">
-                <p>&copy; <strong> @DateTime.Now.Year - DuoPoll</strong></p>
-            </div>
-            <div class="md:flex-1 md:px-4 text-center md:text-right">
-                <a asp-controller="Home" asp-action="ToS" class="py-2 px-4 inline-block hover:underline">@T["Terms of Service"]</a>
-                <a asp-controller="Home" asp-action="Privacy" class="py-2 px-4 inline-block hover:underline">@T["Privacy Policy"]</a>
+    <form id="setLang" asp-controller="User" asp-action="SetLanguage">
+        <div class="container px-4 mx-auto">
+            <div class="md:flex md:-mx-4 md:items-center">
+                <div class="md:flex-1 md:px-4 text-center md:text-left">
+                    <p>&copy; <strong> @DateTime.Now.Year - DuoPoll</strong></p>
+                </div>
+                <div class="md:flex-1 md:px-4 text-center md:text-right">
+                    <select id="lang" name="culture" class="inline-block text-black dark:bg-gray-700 dark:text-gray-200 bg-gray-200 transition duration-100 ease-in-out border border-gray-300 rounded shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <option value="en">EN</option>
+                        <option value="hu">HU</option>
+                    </select>
+                    <a asp-controller="Home" asp-action="ToS" class="py-2 px-4 inline-block hover:underline">@T["Terms of Service"]</a>
+                    <a asp-controller="Home" asp-action="Privacy" class="py-2 px-4 inline-block hover:underline">@T["Privacy Policy"]</a>
+                </div>
             </div>
         </div>
-    </div>
+    </form>
 </footer>
 
 @* <script src="~/js/site.js" asp-append-version="true"></script> *@
 <script>
 let toggleBtn = document.querySelector("#navbar-toggle");
 let collapse = document.querySelector("#navbar-collapse");
+let selectLang = document.getElementById("lang");
 
 toggleBtn.onclick = () => {
   collapse.classList.toggle("hidden");
   collapse.classList.toggle("flex");
 };
+
+selectLang.options.selectedIndex=getLang("hu");
+
+selectLang.onchange =()=>{
+    document.getElementById("setLang").submit();
+}
+
+function getLang(lang){
+    return getCookie(".AspNetCore.Culture").includes(lang)
+}
+
+function getCookie(cname) {
+  let name = cname + "=";
+  let ca = document.cookie.split(';');
+  for(let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
 
 </script>
 

@@ -8,6 +8,8 @@ using System.Web.Mvc;
 using System.Web.WebPages;
 using DuoPoll.Dal;
 using DuoPoll.MVC.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -44,6 +46,26 @@ namespace DuoPoll.MVC.Controllers
                     .Include(p => p.Answers)
                     .Include(p => p.User)
                     .ToList());
+        }
+
+        [System.Web.Mvc.HttpPost]
+        public IActionResult SetLanguage(string culture)
+        {
+            if (culture != "en" && culture != "hu")
+                return BadRequest();
+
+            Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                new CookieOptions
+                {
+                    Expires = DateTimeOffset.Now.AddYears(1),
+                    IsEssential = false,
+                }
+            );
+            return Redirect(Request.Headers["Referer"].ToString().IsEmpty()
+                ? "/"
+                : Request.Headers["Referer"].ToString());
         }
 
         public IActionResult Privacy()

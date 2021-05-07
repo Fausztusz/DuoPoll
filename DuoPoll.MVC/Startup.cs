@@ -71,6 +71,7 @@ namespace DuoPoll.MVC
 
             services.AddRazorPages();
             services.AddControllersWithViews()
+                .AddDataAnnotationsLocalization()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
 
             services.AddPortableObjectLocalization();
@@ -78,14 +79,19 @@ namespace DuoPoll.MVC
             {
                 var supportedCultures = new List<CultureInfo>
                 {
-                    new CultureInfo("en-US"),
-                    new CultureInfo("en"),
-                    new CultureInfo("hu-HU"),
-                    new CultureInfo("hu"),
+                    new("en-US"),
+                    new("en"),
+                    new("hu-HU"),
+                    new("hu"),
                 };
                 o.DefaultRequestCulture = new RequestCulture("en-US");
                 o.SupportedCultures = supportedCultures;
                 o.SupportedUICultures = supportedCultures;
+                o.RequestCultureProviders = new List<IRequestCultureProvider>
+                {
+                  new QueryStringRequestCultureProvider(),
+                  new CookieRequestCultureProvider()
+                };
             });
         }
 

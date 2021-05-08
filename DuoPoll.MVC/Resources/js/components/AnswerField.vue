@@ -1,6 +1,6 @@
 <template>
   <div class="answer-wrapper mt-16">
-    <div class="grid grid-cols-12 gap-4">
+    <div class="grid grid-cols-12 gap-y-8 ">
       <div v-for="answer in answersList" class="col-span-12 md:col-span-6 lg:col-span-3">
         <answer-card :answer="answer" :url="url"></answer-card>
       </div>
@@ -12,7 +12,11 @@
 </template>
 
 <script>
+
+import Vue from "vue";
 import AnswerCard from "./AnswerCard";
+
+export const bus = new Vue();
 
 export default {
   name: "AnswerField",
@@ -25,7 +29,7 @@ export default {
       required: true
     },
     answers: {
-      type: Array|null,
+      type: Array | null,
       required: true
     },
   },
@@ -40,8 +44,18 @@ export default {
   },
   methods: {
     newCard() {
-      this.answersList.push({Title: "", Media: "", Id: null})
+      this.answersList.push({Title: "", Media: "", Id: null, Hash: Math.floor(Math.random() * 10e10)})
     }
   },
+  created() {
+    bus.$on('delete-answer', (data) => {
+      this.answersList = this.answersList.filter((el) => {
+        if (data.id)
+          return el.Id !== data.id
+        return el.Hash !== data.hash
+      })
+    })
+  }
+
 };
 </script>

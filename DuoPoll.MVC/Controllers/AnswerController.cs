@@ -87,7 +87,7 @@ namespace DuoPoll.MVC.Controllers
 
                 var exists = choices.Find(c =>
                     ((c.AnswerId == answers[left].Id && c.LoserId == answers[right].Id)
-                    || (c.AnswerId == answers[right].Id && c.LoserId == answers[left].Id))
+                     || (c.AnswerId == answers[right].Id && c.LoserId == answers[left].Id))
                     && c.UserIdentity == userId);
 
                 if (exists == null) break;
@@ -207,16 +207,27 @@ namespace DuoPoll.MVC.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAnswer(int id)
         {
-            var answer = await _context.Answers.FindAsync(id);
+            var answer = await _context.Answers
+                .Where(a => a.Id == id)
+                .Include(a => a.Poll)
+                .FirstOrDefaultAsync();
+
             if (answer == null)
             {
                 return NotFound();
             }
 
+            CanEdit(answer.Poll);
+
+            var choices = await _context.Choices
+                .Where(c => c.AnswerId == id || c.LoserId == id)
+                .ToListAsync();
+
+            _context.Choices.RemoveRange(choices);
             _context.Answers.Remove(answer);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
         }
 
         private bool AnswerExists(int id)

@@ -14,7 +14,7 @@
       <div v-if="isLoaded && !newGame">
         <div class="grid grid-cols-1 font-display items-end m-3 md:m-8 gap-y-3 md:gap-y-20">
           <div class="items">
-            <img class="md:min-w-full object-cover max-h-36 md:max-h-72 mx-auto overflow-hidden" alt="Image"
+            <img class="md:min-w-full object-cover h-36 md:h-72 mx-auto overflow-hidden" alt="Image"
                  :src="answers.left.media" @error="setAltImg">
           </div>
           <div class="text-4xl">{{ answers.left.title }}</div>
@@ -33,7 +33,7 @@
       <div v-if="isLoaded && !newGame">
         <div class="grid grid-cols-1 font-display items-end m-3 md:m-8 gap-y-3 md:gap-y-20">
           <div>
-            <img class="md:min-w-full object-cover max-h-36 md:max-h-72 mx-auto overflow-hidden" alt="Image"
+            <img class="md:min-w-full object-cover h-36 md:h-72 mx-auto overflow-hidden" alt="Image"
                  :src="answers.right.media" @error="setAltImg">
           </div>
           <div class="text-4xl">{{ answers.right.title }}</div>

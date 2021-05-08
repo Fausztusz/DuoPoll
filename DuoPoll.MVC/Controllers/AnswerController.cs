@@ -126,8 +126,8 @@ namespace DuoPoll.MVC.Controllers
             }
             else if (vote.Side == "right")
             {
-                choice.AnswerId = (int) left;
-                choice.LoserId = (int) right;
+                choice.AnswerId = (int) right;
+                choice.LoserId = (int) left;
                 choice.UserIdentity = GetIdOrHash();
             }
             else

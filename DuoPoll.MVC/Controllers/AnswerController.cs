@@ -86,8 +86,8 @@ namespace DuoPoll.MVC.Controllers
                 } while (left == right);
 
                 var exists = choices.Find(c =>
-                    (c.AnswerId == answers[left].Id && c.LoserId == answers[right].Id)
-                    || (c.AnswerId == answers[right].Id && c.LoserId == answers[left].Id)
+                    ((c.AnswerId == answers[left].Id && c.LoserId == answers[right].Id)
+                    || (c.AnswerId == answers[right].Id && c.LoserId == answers[left].Id))
                     && c.UserIdentity == userId);
 
                 if (exists == null) break;
@@ -241,7 +241,8 @@ namespace DuoPoll.MVC.Controllers
         private string GetIp()
         {
             if (HttpContext.Connection.RemoteIpAddress != null)
-                return ComputeSha256Hash(HttpContext.Connection.RemoteIpAddress.ToString());
+                return HttpContext.Connection.RemoteIpAddress.ToString();
+            // return ComputeSha256Hash(HttpContext.Connection.RemoteIpAddress.ToString());
             return "NO IP";
         }
 

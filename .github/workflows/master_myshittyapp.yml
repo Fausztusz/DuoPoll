@@ -39,11 +39,6 @@ jobs:
           npm run prod
           npx tailwindcss-cli@latest build ./Resources/css/app.css -o ./wwwroot/lib/tailwind.prod.css
     
-    - name: Copy language files
-      run: | 
-          cp ./DuoPoll.MVC/hu.po ${{env.DOTNET_ROOT}}
-          cp ./DuoPoll.MVC/hu.mo ${{env.DOTNET_ROOT}}
-
     - name: dotnet publish
       run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 

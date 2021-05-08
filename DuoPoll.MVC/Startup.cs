@@ -34,7 +34,7 @@ namespace DuoPoll.MVC
         {
             services.AddDbContext<DuoPollDbContext>(
                 o => o.UseSqlServer(Configuration.GetConnectionString(nameof(DuoPollDbContext)),
-                    option=>option.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
+                    option => option.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
             );
 
             services.AddAzureClients(builder =>
@@ -75,7 +75,7 @@ namespace DuoPoll.MVC
                 .AddDataAnnotationsLocalization()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
 
-            services.AddPortableObjectLocalization();
+            services.AddPortableObjectLocalization(o => o.ResourcesPath = "./wwwroot/lang/");
             services.Configure<RequestLocalizationOptions>(o =>
             {
                 var supportedCultures = new List<CultureInfo>
@@ -90,8 +90,8 @@ namespace DuoPoll.MVC
                 o.SupportedUICultures = supportedCultures;
                 o.RequestCultureProviders = new List<IRequestCultureProvider>
                 {
-                  new QueryStringRequestCultureProvider(),
-                  new CookieRequestCultureProvider()
+                    new QueryStringRequestCultureProvider(),
+                    new CookieRequestCultureProvider()
                 };
             });
         }

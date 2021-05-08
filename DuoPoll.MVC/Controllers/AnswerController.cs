@@ -70,22 +70,28 @@ namespace DuoPoll.MVC.Controllers
                 User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new InvalidOperationException()
             );
 
-            const int limit = 20;
+            var choices = await _context.Choices.ToListAsync();
+
+            const int limit = 50;
             int left = 0, right = 0;
             for (var i = 0; i < limit; i++)
             {
-                left = new Random().Next(1, answers.Count);
                 do
                 {
-                    right = new Random().Next(1, answers.Count);
+                    left = new Random().Next(0, answers.Count);
+                    right = new Random().Next(0, answers.Count);
                 } while (left == right);
 
-                var exists = await _context.Choices
-                    .Where(c =>
-                        (c.AnswerId == answers[left].Id && c.LoserId == answers[right].Id)
-                        || (c.AnswerId == answers[right].Id && c.LoserId == answers[left].Id)
-                        && c.UserId == userId)
-                    .FirstOrDefaultAsync();
+                var exists = choices.Find(c =>
+                    (c.AnswerId == answers[left].Id && c.LoserId == answers[right].Id)
+                    || (c.AnswerId == answers[right].Id && c.LoserId == answers[left].Id)
+                    && c.UserId == userId);
+                // var exists = await _context.Choices
+                //     .Where(c =>
+                //         (c.AnswerId == answers[left].Id && c.LoserId == answers[right].Id)
+                //         || (c.AnswerId == answers[right].Id && c.LoserId == answers[left].Id)
+                //         && c.UserId == userId)
+                //     .FirstOrDefaultAsync();
 
                 if (exists == null) break;
                 if (i == limit - 1) return StatusCode(404, "No new question found");
@@ -187,6 +193,11 @@ namespace DuoPoll.MVC.Controllers
             if (poll == null || !CanEdit(poll))
             {
                 return Unauthorized();
+            }
+
+            if (poll.Status == Poll.StatusType.Draft)
+            {
+                poll.Status = Poll.StatusType.Open;
             }
 
             poll.Answers.Add(answer);

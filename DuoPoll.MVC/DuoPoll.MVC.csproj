@@ -106,6 +106,10 @@
       <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Error.cshtml" />
       <_ContentIncludedByDefault Remove="Areas\Identity\Pages\_ValidationScriptsPartial.cshtml" />
       <_ContentIncludedByDefault Remove="Areas\Identity\Pages\_ViewImports.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Statistics\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Statistics\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Statistics\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Statistics\Statistics.cshtml" />
     </ItemGroup>
 
     <ItemGroup>

@@ -20,11 +20,9 @@ namespace DuoPoll.MVC.Controllers
         private UserManager<User> _userManager;
         private readonly DuoPollDbContext _dbContext;
 
-        [BindProperty( SupportsGet = true )]
-        public int PollId { get; set; }
+        [BindProperty(SupportsGet = true)] public int PollId { get; set; }
 
-        [BindProperty]
-        public PollHeader SelectedPoll { get; set; }
+        [BindProperty] public PollHeader SelectedPoll { get; set; }
 
         public PollController(UserManager<User> userManager, DuoPollDbContext dbContext)
         {
@@ -37,7 +35,8 @@ namespace DuoPoll.MVC.Controllers
         public async Task<IActionResult> Index()
         {
             return View(await _dbContext.Polls
-                .Where(p => p.Public == true)
+                .Where(p => p.Public)
+                .Where(p => p.Answers.Count > 0)
                 .Include(p => p.Answers)
                 .Include(p => p.User)
                 .ToListAsync());
@@ -54,7 +53,7 @@ namespace DuoPoll.MVC.Controllers
             }
 
             var poll = await _dbContext.Polls
-                .Include(p=>p.User)
+                .Include(p => p.User)
                 .FirstOrDefaultAsync(m => m.Url == url);
             if (poll == null)
             {
@@ -71,7 +70,7 @@ namespace DuoPoll.MVC.Controllers
         public IActionResult Create()
         {
             var poll = new Poll();
-            return View("~/Views/Poll/Edit.cshtml",poll);
+            return View("~/Views/Poll/Edit.cshtml", poll);
         }
 
         // GET
@@ -85,8 +84,8 @@ namespace DuoPoll.MVC.Controllers
             }
 
             var poll = await _dbContext.Polls
-                .Include(p=>p.Answers)
-                .FirstOrDefaultAsync(p=>p.Url == url);
+                .Include(p => p.Answers)
+                .FirstOrDefaultAsync(p => p.Url == url);
             if (poll == null)
             {
                 return NotFound();
@@ -102,7 +101,8 @@ namespace DuoPoll.MVC.Controllers
         [Authorize]
         public async Task<IActionResult> Create(Poll poll)
         {
-            poll.UserId = int.Parse( User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new InvalidOperationException());
+            poll.UserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ??
+                                    throw new InvalidOperationException());
 
             await _dbContext.Polls.AddAsync(poll);
             await _dbContext.SaveChangesAsync();
@@ -113,14 +113,16 @@ namespace DuoPoll.MVC.Controllers
         [Authorize]
         [ValidateAntiForgeryToken]
         [HttpPost("Poll/Edit/{url:length(32)}")]
-        public async Task<IActionResult> Update(string url,[Bind("Id,Name,Url,Public,Status,Open,Close")] Poll poll)
+        public async Task<IActionResult> Update(string url, [Bind("Id,Name,Url,Public,Status,Open,Close")]
+            Poll poll)
         {
-
             if (url != poll.Url)
             {
                 return NotFound();
             }
-            poll.UserId = int.Parse( User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new InvalidOperationException());
+
+            poll.UserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ??
+                                    throw new InvalidOperationException());
 
             if (ModelState.IsValid)
             {
@@ -140,20 +142,47 @@ namespace DuoPoll.MVC.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View("~/Views/Poll/Details.cshtml", poll);
         }
 
-        public IActionResult Statistics()
+        // GET
+        [AllowAnonymous]
+        [HttpGet("Poll/Statistics/{url:length(32)}")]
+        public IActionResult Statistics(string url)
         {
-            return View();
+            if (url == null)
+            {
+                return NotFound();
+            }
+
+            ViewData["Url"] = url;
+
+            return View("~/Views/Poll/Statistics.cshtml");
+        }
+
+        public async Task<IActionResult> Statistics()
+        {
+            var poll = await _dbContext.Polls
+                .Where(p => p.Answers.Count > 0)
+                .Where(p => p.Public)
+                .Where(p=>p.Status != Poll.StatusType.Draft)
+                .Include(p => p.User)
+                .Include(p => p.Answers)
+                .ThenInclude(a => a.Choices)
+                .ToListAsync();
+
+            return View(poll);
         }
 
         private bool PollExists(int id)
         {
             return _dbContext.Polls.Any(e => e.Id == id);
         }
+
         private bool PollExists(string url)
         {
             return _dbContext.Polls.Any(e => e.Url == url);

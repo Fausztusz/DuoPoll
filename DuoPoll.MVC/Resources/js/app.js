@@ -14,6 +14,8 @@ import English from "vue-tailwind/dist/l10n/default";
 
 import AnswerField from "./components/AnswerField";
 import Vote from "./components/Vote";
+import Statistics from "./components/Statistics";
+import Loader from "./components/Loader";
 
 window.Vue = require("vue");
 window.axios = axios;
@@ -81,6 +83,8 @@ const settings = {
 Vue.use(VueTailwind, settings)
 Vue.component('answer-field', AnswerField)
 Vue.component('vote', Vote)
+Vue.component('statistics', Statistics)
+Vue.component('loader', Loader)
 
 Vue.config.devtools = process.env.NODE_ENV === 'development';
 Vue.config.productionTip = process.env.NODE_ENV === 'development';

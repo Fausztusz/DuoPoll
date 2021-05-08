@@ -86,6 +86,9 @@ msgstr "Készítette: "
 msgid "options"
 msgstr "lehetőség"
 
+msgid "answers"
+msgstr "válasz"
+
 msgid "Polls"
 msgstr "Szavazások"
 

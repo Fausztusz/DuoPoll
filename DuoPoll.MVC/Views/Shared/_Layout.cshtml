@@ -34,7 +34,7 @@
     <link href="~/css/site.css" rel="stylesheet">
 </head>
 <body class="flex flex-col min-h-screen dark:bg-gray-900 bg-gray-100 text-gray-600 dark:text-gray-200 font-sans">
-<div class="header-2 border-b border-gray-200">
+<div class="header-2 border-b border-gray-700 dark:border-gray-200">
     <nav class="py-2 md:py-4 font-display">
         <div class="container px-4 mx-auto md:flex md:items-center">
 
@@ -133,10 +133,10 @@ function getCookie(cname) {
   let ca = document.cookie.split(';');
   for(let i = 0; i < ca.length; i++) {
     let c = ca[i];
-    while (c.charAt(0) == ' ') {
+    while (c.charAt(0) === ' ') {
       c = c.substring(1);
     }
-    if (c.indexOf(name) == 0) {
+    if (c.indexOf(name) === 0) {
       return c.substring(name.length, c.length);
     }
   }

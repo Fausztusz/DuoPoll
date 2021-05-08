@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueAxios from 'vue-axios'
+import {i18n} from "./plugins/i18n";
 import axios from 'axios'
 import VueTailwind from 'vue-tailwind'
 
@@ -91,6 +92,7 @@ Vue.config.productionTip = process.env.NODE_ENV === 'development';
 
 var app = new Vue({
     el: '#app',
+    i18n,
     data: {
     }
 });

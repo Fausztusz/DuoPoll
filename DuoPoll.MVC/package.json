@@ -13,6 +13,7 @@
     "@tailwindcss/forms": "^0.3.2",
     "vue": "^2.6.12",
     "vue-axios": "^3.2.4",
+    "vue-i18n": "^8.24.4",
     "vue-tailwind": "^2.2.1",
     "vue2-dropzone": "^3.6.0"
   },

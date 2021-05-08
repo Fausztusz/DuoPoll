@@ -42,7 +42,7 @@
           <span class="text-2xl">{{ `#${index + 1}` }}</span> {{ answer.title }}
         </div>
         <div class="col-span-1 text-center">
-          Win%
+          {{ $t("win_percent")}}
         </div>
         <div class="col-span-1 text-left">
           {{ answer.winPercentage }}%
@@ -51,13 +51,13 @@
           <img :src="getImage(answer)" @error="setAltImg" alt="Img" class="mx-auto h-36 object-cover">
         </div>
         <div class="col-span-1 text-center">
-          Wins
+          {{ $t("wins")}}
         </div>
         <div class="col-span-1 text-left">
           {{ answer.wins }}
         </div>
         <div class="col-span-1 text-center">
-          Losses
+          {{ $t("losses")}}
         </div>
         <div class="col-span-1 text-left">
           {{ answer.loses }}

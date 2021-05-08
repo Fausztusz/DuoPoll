@@ -26,7 +26,7 @@
         <!--        </div>-->
       </div>
       <div class="col-span-1">
-        <t-button type="button" class="w-full" @click="save">Save</t-button>
+        <t-button type="button" class="w-full" @click="save">{{$t("save")}}</t-button>
       </div>
     </div>
   </div>

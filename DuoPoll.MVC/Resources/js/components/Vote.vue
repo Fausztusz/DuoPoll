@@ -3,10 +3,10 @@
   <div class="grid grid-cols-2 text-center align-baseline gap-5 md:gap-10 max-w-sm md:max-w-4xl mx-auto">
     <div v-if="errorMessage" class="col-span-2 text-3xl text-red-900">{{ errorMessage }}</div>
     <a class="col-span-1" href="/Poll">
-      <t-button class="mx-auto" v-if="newGame">Play an other game</t-button>
+      <t-button class="mx-auto" v-if="newGame">{{ $t("new_game")}}</t-button>
     </a>
     <a class="col-span-1" :href="`/Poll/Statistics/${url}`">
-      <t-button class="mx-auto" v-if="newGame">Check out the stats</t-button>
+      <t-button class="mx-auto" v-if="newGame">{{ $t("show_stats") }}</t-button>
     </a>
 
     <div class="col-span-2 md:col-span-1 h-3xl bg-gray-300 dark:bg-gray-600 rounded-lg">
@@ -21,7 +21,7 @@
           <div>
             <button @click="vote('left')"
                     class="bg-purple-600 text-gray-200 dark:bg-gray-500 rounded-full text-2xl py-2 px-4 md:px-8 md:py-4 ">
-              Select
+              {{ $t("select") }}
             </button>
           </div>
         </div>
@@ -40,7 +40,7 @@
           <div>
             <button @click="vote('right')"
                     class="bg-purple-600 text-gray-200 dark:bg-gray-500 rounded-full text-2xl py-2 px-4 md:px-8 md:py-4 ">
-              Select
+              {{ $t("select") }}
             </button>
           </div>
         </div>

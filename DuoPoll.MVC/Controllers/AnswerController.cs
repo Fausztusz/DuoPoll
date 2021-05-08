@@ -10,6 +10,7 @@ using DuoPoll.Dal.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
 using Controller = Microsoft.AspNetCore.Mvc.Controller;
 
@@ -38,10 +39,12 @@ namespace DuoPoll.MVC.Controllers
     public class AnswerController : Controller
     {
         private readonly DuoPollDbContext _context;
+        private readonly IStringLocalizer T;
 
-        public AnswerController(DuoPollDbContext context)
+        public AnswerController(DuoPollDbContext context, IStringLocalizer<AnswerController> localizer)
         {
             _context = context;
+            T = localizer;
         }
 
         // GET: api/Answer
@@ -66,7 +69,7 @@ namespace DuoPoll.MVC.Controllers
                 .Include(a => a.Losses)
                 .ToListAsync();
 
-            if (answers.Count < 2) return StatusCode(422, "Not enough answers");
+            if (answers.Count < 2) return StatusCode(422, T["Not enough answers"].ToString());
 
             var userId = GetIdOrHash();
 
@@ -88,7 +91,7 @@ namespace DuoPoll.MVC.Controllers
                     && c.UserIdentity == userId);
 
                 if (exists == null) break;
-                if (i == limit - 1) return StatusCode(404, "No new question found");
+                if (i == limit - 1) return StatusCode(404, T["No new question found!"].ToString());
             }
 
             HttpContext.Session.SetInt32("left", answers[left].Id);

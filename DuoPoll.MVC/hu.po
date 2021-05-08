@@ -179,3 +179,9 @@ msgstr "Jelszó visszaállítás megerősítése"
 
 msgid "Your password has been reset. Please <a asp-page=\"./Login\">click here to log in</a>."
 msgstr "Visszaállítottuk a jelszavad. Kattints<a asp-page=\"./Login\">ide a bejelentkezéshez</a>."
+
+msgid "Not enough answers!"
+msgstr "Nincs elég válaszlehetőség!"
+
+msgid "No new question found!"
+msgstr "Nincs elérhető új kérdés!"

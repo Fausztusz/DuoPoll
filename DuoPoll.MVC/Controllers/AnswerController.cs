@@ -241,8 +241,7 @@ namespace DuoPoll.MVC.Controllers
         private string GetIp()
         {
             if (HttpContext.Connection.RemoteIpAddress != null)
-                return HttpContext.Connection.RemoteIpAddress.ToString();
-            // return ComputeSha256Hash(HttpContext.Connection.RemoteIpAddress.ToString());
+                return ComputeSha256Hash(HttpContext.Connection.RemoteIpAddress.ToString());
             return "NO IP";
         }
 

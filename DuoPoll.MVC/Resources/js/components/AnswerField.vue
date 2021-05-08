@@ -1,5 +1,5 @@
 <template>
-  <div class="answer-wrapper">
+  <div class="answer-wrapper mt-16">
     <div class="grid grid-cols-12 gap-4">
       <div v-for="answer in answersList" class="col-span-12 md:col-span-6 lg:col-span-3">
         <answer-card :answer="answer" :url="url"></answer-card>

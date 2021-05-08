@@ -2,8 +2,11 @@
 
   <div class="grid grid-cols-2 text-center align-baseline gap-5 md:gap-10 max-w-sm md:max-w-4xl mx-auto">
     <div v-if="errorMessage" class="col-span-2 text-3xl text-red-900">{{ errorMessage }}</div>
-    <a class="col-span-2" href="/Poll">
+    <a class="col-span-1" href="/Poll">
       <t-button class="mx-auto" v-if="newGame">Play an other game</t-button>
+    </a>
+    <a class="col-span-1" href="/Poll">
+      <t-button class="mx-auto" v-if="newGame">Check out the stats</t-button>
     </a>
 
     <div class="col-span-2 md:col-span-1 h-3xl bg-gray-300 dark:bg-gray-600 rounded-lg">
@@ -31,7 +34,7 @@
         <div class="grid grid-cols-1 font-display items-end m-3 md:m-8 gap-y-3 md:gap-y-20">
           <div>
             <img class="md:min-w-full object-cover max-h-36 md:max-h-72 mx-auto overflow-hidden" alt="Image"
-                 :src="answers.right.media">
+                 :src="answers.right.media" @error="setAltImg">
           </div>
           <div class="text-4xl">{{ answers.right.title }}</div>
           <div>
@@ -60,6 +63,9 @@ export default {
     }
   },
   methods: {
+    setAltImg(event) {
+      event.target.src = "/images/placeholder.png"
+    },
     vote(side) {
       if (side === "left" || side === "right") {
         axios({

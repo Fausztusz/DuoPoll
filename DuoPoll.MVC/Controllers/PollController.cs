@@ -36,6 +36,7 @@ namespace DuoPoll.MVC.Controllers
         {
             return View(await _dbContext.Polls
                 .Where(p => p.Public)
+                .Where(p=>p.Status == Poll.StatusType.Open)
                 .Where(p => p.Answers.Count > 0)
                 .Include(p => p.Answers)
                 .Include(p => p.User)
@@ -146,7 +147,7 @@ namespace DuoPoll.MVC.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            return View("~/Views/Poll/Details.cshtml", poll);
+            return View("~/Views/Poll/Edit.cshtml", poll);
         }
 
         // GET

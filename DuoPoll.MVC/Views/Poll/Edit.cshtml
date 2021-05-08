@@ -1,22 +1,27 @@
 @using Newtonsoft.Json
+@using DuoPoll.Dal.Entities
 @model DuoPoll.Dal.Entities.Poll
 @{
     ViewData["Title"] = ViewData["Title"] ?? T["Create Poll"];
     ViewData["Current"] = ViewData["Current"] ?? "polls.create";
 }
 <form method="POST" asp-controller="Poll">
+    <input type="hidden" name="Id" value="@Model.Id">
     <div class="grid grid-cols-2 max-w-2xl mx-auto gap-3 m-4 jus filter drop-shadow-lg hover:drop-shadow-2xl">
         <div class="col-span-1">Name:</div>
         <t-input name="Name" value="@Model.Name" required></t-input>
 
         <div class="col-span-1">@T["Public:"]</div>
-        <checkbox name="Public" @Html.DisplayText(Model.Public ? "checked" : " ")></checkbox>
+        <checkbox name="Public" @Html.DisplayName(Model.Public ? "checked" : " ")></checkbox>
 
         <div class="col-span-1">@T["Open:"]</div>
         <date-picker name="Open" lang="en" value="@Model.Open.ToString("yyyy-MM-dd HH:mm")"></date-picker>
 
         <div class="col-span-1">@T["Close:"]</div>
         <date-picker name="Close" lang="hu" value="@Model.Close.ToString("yyyy-MM-dd HH:mm")"></date-picker>
+
+        <div class="col-span-1">@T["Status:"]</div>
+        <t-select name="Status" value="@Model.Status.ToString()" :options="[@Poll.GetStatusString()]"></t-select>
 
         <t-button class="col-span-2">@T["Submit"]</t-button>
     </div>

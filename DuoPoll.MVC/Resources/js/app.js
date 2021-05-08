@@ -53,7 +53,7 @@ const settings = {
                 clearButton: 'flex flex-shrink-0 items-center justify-center absolute right-0 top-0 m-2 h-6 w-6',
                 clearButtonIcon: 'fill-current h-3 w-3',
 
-                dropdown: 'dark:bg-gray-700',
+                dropdown: 'dark:bg-gray-700 z-40 static',
                 timepickerTimeFieldsWrapper: 'dark:bg-gray-700',
                 timepickerOkButton: 'dark:text-gray-200',
                 day: 'dark:hover:text-gray-900',

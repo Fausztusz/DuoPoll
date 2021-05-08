@@ -17,6 +17,11 @@ namespace DuoPoll.Dal.Entities
             // Answers = new HashSet<Answer>();
         }
 
+        public static string GetStatusString()
+        {
+            return $"'{StatusType.Open.ToString()}','{StatusType.Close.ToString()}','{StatusType.Draft.ToString()}','{StatusType.Locked.ToString()}','{StatusType.Expired.ToString()}'";
+        }
+
         public enum StatusType
         {
             Open,

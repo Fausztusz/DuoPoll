@@ -33,7 +33,8 @@ namespace DuoPoll.MVC
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DuoPollDbContext>(
-                o => o.UseSqlServer(Configuration.GetConnectionString(nameof(DuoPollDbContext)))
+                o => o.UseSqlServer(Configuration.GetConnectionString(nameof(DuoPollDbContext)),
+                    option=>option.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
             );
 
             services.AddAzureClients(builder =>

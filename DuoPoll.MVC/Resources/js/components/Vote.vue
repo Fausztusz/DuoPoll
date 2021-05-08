@@ -5,7 +5,7 @@
     <a class="col-span-1" href="/Poll">
       <t-button class="mx-auto" v-if="newGame">Play an other game</t-button>
     </a>
-    <a class="col-span-1" href="/Poll">
+    <a class="col-span-1" :href="`/Poll/Statistics/${url}`">
       <t-button class="mx-auto" v-if="newGame">Check out the stats</t-button>
     </a>
 
@@ -70,7 +70,7 @@ export default {
       if (side === "left" || side === "right") {
         axios({
           method: "POST",
-          url: `${this.url}/Vote`,
+          url: `/api/Answer/${this.url}/Vote`,
           data: {Side: side}
         }).then((res) => {
         }).catch((error) => {
@@ -81,7 +81,7 @@ export default {
     loadQuestion() {
       axios({
         method: "GET",
-        url: this.url,
+        url: "/api/Answer/" + this.url,
       }).then((res) => {
         this.answers = {
           left: res.data.left,

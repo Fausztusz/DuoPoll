@@ -10,11 +10,9 @@ namespace DuoPoll.Dal.Entities
         public User()
         {
             Polls = new HashSet<Poll>();
-            Choices = new HashSet<Choice>();
         }
 
         [AllowNull]
         [InverseProperty("User")] public virtual ICollection<Poll> Polls { get; set; }
-        [InverseProperty("User")] public virtual ICollection<Choice> Choices { get; set; }
     }
 }

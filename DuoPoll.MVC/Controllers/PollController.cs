@@ -165,6 +165,7 @@ namespace DuoPoll.MVC.Controllers
             return View("~/Views/Poll/Statistics.cshtml");
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Statistics()
         {
             var poll = await _dbContext.Polls

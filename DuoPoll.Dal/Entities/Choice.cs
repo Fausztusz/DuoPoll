@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DuoPoll.Dal.Entities
 {
-    [Index(nameof(Id), nameof(UserId), nameof(AnonIdentity))]
+    [Index(nameof(Id), nameof(UserIdentity))]
     public class Choice
     {
         public Choice()
@@ -21,12 +21,9 @@ namespace DuoPoll.Dal.Entities
 
         public int AnswerId { get; set; }
         public int LoserId { get; set; }
-        [AllowNull] public int UserId { get; set; }
-        [AllowNull] public string AnonIdentity { get; set; }
+        [AllowNull] public string UserIdentity { get; set; }
 
         public virtual Answer Answer { get; set; }
         public virtual Answer Loser { get; set; }
-
-        [InverseProperty("Choices")] public virtual User User { get; set; }
     }
 }

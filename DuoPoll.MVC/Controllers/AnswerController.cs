@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using DuoPoll.Dal;
 using DuoPoll.Dal.Entities;
@@ -66,9 +68,7 @@ namespace DuoPoll.MVC.Controllers
 
             if (answers.Count < 2) return StatusCode(422, "Not enough answers");
 
-            var userId = int.Parse(
-                User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new InvalidOperationException()
-            );
+            var userId = GetIdOrHash();
 
             var choices = await _context.Choices.ToListAsync();
 
@@ -85,13 +85,7 @@ namespace DuoPoll.MVC.Controllers
                 var exists = choices.Find(c =>
                     (c.AnswerId == answers[left].Id && c.LoserId == answers[right].Id)
                     || (c.AnswerId == answers[right].Id && c.LoserId == answers[left].Id)
-                    && c.UserId == userId);
-                // var exists = await _context.Choices
-                //     .Where(c =>
-                //         (c.AnswerId == answers[left].Id && c.LoserId == answers[right].Id)
-                //         || (c.AnswerId == answers[right].Id && c.LoserId == answers[left].Id)
-                //         && c.UserId == userId)
-                //     .FirstOrDefaultAsync();
+                    && c.UserIdentity == userId);
 
                 if (exists == null) break;
                 if (i == limit - 1) return StatusCode(404, "No new question found");
@@ -125,13 +119,13 @@ namespace DuoPoll.MVC.Controllers
             {
                 choice.AnswerId = (int) left;
                 choice.LoserId = (int) right;
-                choice.UserId = GetUserId();
+                choice.UserIdentity = GetIdOrHash();
             }
             else if (vote.Side == "right")
             {
                 choice.AnswerId = (int) left;
                 choice.LoserId = (int) right;
-                choice.UserId = GetUserId();
+                choice.UserIdentity = GetIdOrHash();
             }
             else
                 return BadRequest();
@@ -231,6 +225,38 @@ namespace DuoPoll.MVC.Controllers
         {
             return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value
                              ?? throw new InvalidOperationException());
+        }
+
+        private string GetIdOrHash()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                         ?? GetIp();
+
+            return userId;
+        }
+
+        private string GetIp()
+        {
+            if (HttpContext.Connection.RemoteIpAddress != null)
+                return ComputeSha256Hash(HttpContext.Connection.RemoteIpAddress.ToString());
+            return "NO IP";
+        }
+
+        private static string ComputeSha256Hash(string rawData)
+        {
+            // Create a SHA256
+            using var sha256Hash = SHA256.Create();
+            // ComputeHash - returns byte array
+            var bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
+
+            // Convert byte array to a string
+            var builder = new StringBuilder();
+            foreach (var t in bytes)
+            {
+                builder.Append(t.ToString("x2"));
+            }
+
+            return builder.ToString();
         }
 
         private bool CanEdit(Poll poll)

@@ -71,9 +71,9 @@ namespace DuoPoll.MVC.Controllers
 
             if (answers.Count < 2) return StatusCode(422, T["Not enough answers"].ToString());
 
-            var userId = GetIdOrHash();
-
-            var choices = await _context.Choices.ToListAsync();
+            var choices = await _context.Choices
+                .Where(c=>c.UserIdentity == GetIdOrHash())
+                .ToListAsync();
 
             const int limit = 50;
             int left = 0, right = 0;
@@ -86,9 +86,8 @@ namespace DuoPoll.MVC.Controllers
                 } while (left == right);
 
                 var exists = choices.Find(c =>
-                    ((c.AnswerId == answers[left].Id && c.LoserId == answers[right].Id)
-                     || (c.AnswerId == answers[right].Id && c.LoserId == answers[left].Id))
-                    && c.UserIdentity == userId);
+                    (c.AnswerId == answers[left].Id && c.LoserId == answers[right].Id)
+                     || (c.AnswerId == answers[right].Id && c.LoserId == answers[left].Id));
 
                 if (exists == null) break;
                 if (i == limit - 1) return StatusCode(404, T["No new question found!"].ToString());

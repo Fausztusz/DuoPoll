@@ -4,6 +4,7 @@ using System.Globalization;
 using Azure.Storage.Blobs;
 using DuoPoll.Dal;
 using DuoPoll.Dal.Entities;
+using DuoPoll.Dal.Service;
 using DuoPoll.MVC.Routes;
 using DuoPoll.MVC.Settings;
 using Microsoft.AspNetCore.Builder;
@@ -94,6 +95,8 @@ namespace DuoPoll.MVC
                     new CookieRequestCultureProvider()
                 };
             });
+
+            services.AddScoped<PollService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

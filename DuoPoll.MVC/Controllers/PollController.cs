@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DuoPoll.Dal;
 using DuoPoll.Dal.Dto;
 using DuoPoll.Dal.Entities;
+using DuoPoll.Dal.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,17 +18,13 @@ namespace DuoPoll.MVC.Controllers
     [AutoValidateAntiforgeryToken]
     public class PollController : Controller
     {
-        private UserManager<User> _userManager;
         private readonly DuoPollDbContext _dbContext;
+        private readonly PollService _pollService;
 
-        [BindProperty(SupportsGet = true)] public int PollId { get; set; }
-
-        [BindProperty] public PollHeader SelectedPoll { get; set; }
-
-        public PollController(UserManager<User> userManager, DuoPollDbContext dbContext)
+        public PollController(DuoPollDbContext dbContext, PollService pollService)
         {
-            _userManager = userManager;
             _dbContext = dbContext;
+            _pollService = pollService;
         }
 
         // GET
@@ -36,7 +33,7 @@ namespace DuoPoll.MVC.Controllers
         {
             return View(await _dbContext.Polls
                 .Where(p => p.Public)
-                .Where(p=>p.Status == Poll.StatusType.Open)
+                .Where(p => p.Status == Poll.StatusType.Open)
                 .Where(p => p.Answers.Count > 0)
                 .Include(p => p.Answers)
                 .Include(p => p.User)
@@ -100,13 +97,12 @@ namespace DuoPoll.MVC.Controllers
         // POST
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Create(Poll poll)
+        public async Task<IActionResult> Create(PollHeader pollHeader)
         {
-            poll.UserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ??
-                                    throw new InvalidOperationException());
+            pollHeader.UserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ??
+                                          throw new InvalidOperationException());
 
-            await _dbContext.Polls.AddAsync(poll);
-            await _dbContext.SaveChangesAsync();
+            var poll = await _pollService.Create(pollHeader);
 
             return Redirect("/Poll/Details/" + poll.Url);
         }
@@ -114,40 +110,33 @@ namespace DuoPoll.MVC.Controllers
         [Authorize]
         [ValidateAntiForgeryToken]
         [HttpPost("Poll/Edit/{url:length(32)}")]
-        public async Task<IActionResult> Update(string url, [Bind("Id,Name,Url,Public,Status,Open,Close")]
-            Poll poll)
+        public async Task<IActionResult> Update(string url, [Bind("Name,Url,Public,Status,Open,Close")]
+            PollHeader pollHeader)
         {
-            if (url != poll.Url)
+            if (url != pollHeader.Url)
             {
                 return NotFound();
             }
 
-            poll.UserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ??
-                                    throw new InvalidOperationException());
+            pollHeader.UserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ??
+                                          throw new InvalidOperationException());
 
             if (ModelState.IsValid)
             {
+                Poll poll;
                 try
                 {
-                    _dbContext.Update(poll);
-                    await _dbContext.SaveChangesAsync();
+                    poll = await _pollService.Update(pollHeader);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PollExists(poll.Url))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return NotFound();
                 }
 
-                return RedirectToAction(nameof(Index));
+                return View("~/Views/Poll/Edit.cshtml", poll);
             }
 
-            return View("~/Views/Poll/Edit.cshtml", poll);
+            return NotFound();
         }
 
         // GET
@@ -171,7 +160,7 @@ namespace DuoPoll.MVC.Controllers
             var poll = await _dbContext.Polls
                 .Where(p => p.Answers.Count > 0)
                 .Where(p => p.Public)
-                .Where(p=>p.Status != Poll.StatusType.Draft)
+                .Where(p => p.Status != Poll.StatusType.Draft)
                 .Include(p => p.User)
                 .Include(p => p.Answers)
                 .ThenInclude(a => a.Choices)

@@ -23,7 +23,7 @@ namespace DuoPoll.Dal.Entities
 
         [JsonIgnore]
         public int PollId { get; set; }
-        [MaxLength(50)] public string Title { get; set; }
+        [MaxLength(50)][Required] public string Title { get; set; }
 
         [MaxLength(255)] [AllowNull] public string Media { get; set; }
 

@@ -17,6 +17,7 @@ import AnswerField from "./components/AnswerField";
 import Vote from "./components/Vote";
 import Statistics from "./components/Statistics";
 import Loader from "./components/Loader";
+import ThemeSwitcher from "./components/ThemeSwitcher";
 
 window.Vue = require("vue");
 window.axios = axios;
@@ -86,6 +87,7 @@ Vue.component('answer-field', AnswerField)
 Vue.component('vote', Vote)
 Vue.component('statistics', Statistics)
 Vue.component('loader', Loader)
+Vue.component('theme-switcher', ThemeSwitcher)
 
 Vue.config.devtools = process.env.NODE_ENV === 'development';
 Vue.config.productionTip = process.env.NODE_ENV === 'development';
@@ -93,6 +95,5 @@ Vue.config.productionTip = process.env.NODE_ENV === 'development';
 var app = new Vue({
     el: '#app',
     i18n,
-    data: {
-    }
+    data: {}
 });

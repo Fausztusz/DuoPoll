@@ -185,3 +185,6 @@ msgstr "Nincs elég válaszlehetőség!"
 
 msgid "No new question found!"
 msgstr "Nincs elérhető új kérdés!"
+
+msgid "Switch theme"
+msgstr "Témaváltás"

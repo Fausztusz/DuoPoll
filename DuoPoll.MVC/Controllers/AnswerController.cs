@@ -6,7 +6,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using DuoPoll.Dal;
+using DuoPoll.Dal.Dto;
 using DuoPoll.Dal.Entities;
+using DuoPoll.Dal.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -25,55 +27,32 @@ namespace DuoPoll.MVC.Controllers
         public string Url { get; set; }
     }
 
-    internal class Vote
-    {
-        private Vote()
-        {
-        }
-
-        public string Side { get; set; }
-    }
-
     [ApiController]
     [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     public class AnswerController : Controller
     {
-        private readonly DuoPollDbContext _context;
-        private readonly IStringLocalizer T;
+        private readonly IStringLocalizer _;
+        private readonly PollService _pollService;
+        private readonly AnswerService _answerService;
+        private readonly ChoiceService _choiceService;
 
-        public AnswerController(DuoPollDbContext context, IStringLocalizer<AnswerController> localizer)
+        public AnswerController(IStringLocalizer<AnswerController> localisation,
+            AnswerService answerService, PollService pollService, ChoiceService choiceService)
         {
-            _context = context;
-            T = localizer;
-        }
-
-        // GET: api/Answer
-        [Microsoft.AspNetCore.Mvc.HttpGet]
-        public async Task<ActionResult<IEnumerable<Answer>>> GetAnswers()
-        {
-            return await _context.Answers.ToListAsync();
+            _ = localisation;
+            _pollService = pollService;
+            _answerService = answerService;
+            _choiceService = choiceService;
         }
 
         // GET: api/Answer/5
         [HttpGet("{url:length(32)}")]
         public async Task<ActionResult<IEnumerable<Answer>>> GetAnswer(string url)
         {
-            var poll = await _context.Polls
-                .AsNoTracking()
-                .Where(p => p.Url == url)
-                .FirstOrDefaultAsync();
+            var answers = await _answerService.GetAnswers(url);
+            if (answers.Count < 2) return StatusCode(422, _["Not enough answers"].ToString());
 
-            var answers = await _context.Answers
-                .Where(a => a.PollId == poll.Id)
-                .Include(a => a.Choices)
-                .Include(a => a.Losses)
-                .ToListAsync();
-
-            if (answers.Count < 2) return StatusCode(422, T["Not enough answers"].ToString());
-
-            var choices = await _context.Choices
-                .Where(c=>c.UserIdentity == GetIdOrHash())
-                .ToListAsync();
+            var choices = await _choiceService.GetChoices(GetIdOrHash());
 
             const int limit = 50;
             int left = 0, right = 0;
@@ -87,10 +66,10 @@ namespace DuoPoll.MVC.Controllers
 
                 var exists = choices.Find(c =>
                     (c.AnswerId == answers[left].Id && c.LoserId == answers[right].Id)
-                     || (c.AnswerId == answers[right].Id && c.LoserId == answers[left].Id));
+                    || (c.AnswerId == answers[right].Id && c.LoserId == answers[left].Id));
 
                 if (exists == null) break;
-                if (i == limit - 1) return StatusCode(404, T["No new question found!"].ToString());
+                if (i == limit - 1) return StatusCode(404, _["No new question found!"].ToString());
             }
 
             HttpContext.Session.SetInt32("left", answers[left].Id);
@@ -104,10 +83,8 @@ namespace DuoPoll.MVC.Controllers
         }
 
         [HttpPost("{url:length(32)}/Vote")]
-        public async Task<IActionResult> PostVote(string url, object json)
+        public async Task<IActionResult> PostVote(string url, ChoiceHeader choiceHeader)
         {
-            var vote = JsonConvert.DeserializeObject<Vote>(json.ToString());
-
             var left = HttpContext.Session.GetInt32("left");
             var right = HttpContext.Session.GetInt32("right");
 
@@ -117,13 +94,13 @@ namespace DuoPoll.MVC.Controllers
             }
 
             var choice = new Choice();
-            if (vote.Side == "left")
+            if (choiceHeader.Side == "left")
             {
                 choice.AnswerId = (int) left;
                 choice.LoserId = (int) right;
                 choice.UserIdentity = GetIdOrHash();
             }
-            else if (vote.Side == "right")
+            else if (choiceHeader.Side == "right")
             {
                 choice.AnswerId = (int) right;
                 choice.LoserId = (int) left;
@@ -132,8 +109,7 @@ namespace DuoPoll.MVC.Controllers
             else
                 return BadRequest();
 
-            await _context.Choices.AddAsync(choice);
-            await _context.SaveChangesAsync();
+            await _choiceService.CreateChoice(choice);
 
             HttpContext.Session.SetInt32("left", 0);
             HttpContext.Session.SetInt32("right", 0);
@@ -144,18 +120,12 @@ namespace DuoPoll.MVC.Controllers
         // PUT: api/Answer/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<ActionResult<Answer>> PutAnswer(int id, object json)
+        public async Task<ActionResult<Answer>> PutAnswer(int id,
+            [Bind("Id,Title,Media,Url")] AnswerHeader answerHeader)
         {
-            // I hate this
-            var answer = JsonConvert.DeserializeObject<Answer>(json.ToString());
-            var url = JsonConvert.DeserializeObject<PollUrl>(json.ToString());
+            var poll = await _pollService.GetPollWithAnswers(answerHeader.Url);
 
-            var poll = await _context.Polls
-                .AsNoTracking()
-                .Include(p => p.Answers)
-                .FirstOrDefaultAsync(p => p.Url == url.Url);
-
-            if (id != answer.Id || poll == null)
+            if (id != answerHeader.Id || poll == null)
             {
                 return BadRequest();
             }
@@ -165,26 +135,16 @@ namespace DuoPoll.MVC.Controllers
                 return Unauthorized();
             }
 
-            answer.PollId = poll.Id;
-            _context.Entry(answer).State = EntityState.Modified;
-
-            _context.Answers.Update(answer);
-            await _context.SaveChangesAsync();
-
+            await _answerService.UpdateAnswer(answerHeader, poll.Id);
             return Json("Ok");
         }
 
         // POST: api/Answer
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Answer>> PostAnswer(object json)
+        public async Task<ActionResult<Answer>> PostAnswer(AnswerHeader answerHeader)
         {
-            var answer = JsonConvert.DeserializeObject<Answer>(json.ToString());
-            var url = JsonConvert.DeserializeObject<PollUrl>(json.ToString());
-
-            var poll = await _context.Polls
-                .Include(p => p.Answers)
-                .FirstOrDefaultAsync(p => p.Url == url.Url);
+            var poll = await _pollService.GetPollWithAnswers(answerHeader.Url);
 
             if (poll == null || !CanEdit(poll))
             {
@@ -196,8 +156,7 @@ namespace DuoPoll.MVC.Controllers
                 poll.Status = Poll.StatusType.Open;
             }
 
-            poll.Answers.Add(answer);
-            await _context.SaveChangesAsync();
+            var answer = await _answerService.CreateAnswer(answerHeader, poll.Id);
 
             return Json(new {id = answer.Id});
         }
@@ -206,32 +165,20 @@ namespace DuoPoll.MVC.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAnswer(int id)
         {
-            var answer = await _context.Answers
-                .Where(a => a.Id == id)
-                .Include(a => a.Poll)
-                .FirstOrDefaultAsync();
+            var answer = await _answerService.GetAnswer(id);
 
             if (answer == null)
             {
                 return NotFound();
             }
 
-            CanEdit(answer.Poll);
+            if (!CanEdit(answer.Poll))
+            {
+                return Unauthorized();
+            }
 
-            var choices = await _context.Choices
-                .Where(c => c.AnswerId == id || c.LoserId == id)
-                .ToListAsync();
-
-            _context.Choices.RemoveRange(choices);
-            _context.Answers.Remove(answer);
-            await _context.SaveChangesAsync();
-
+            await _answerService.DeleteAnswer(answer);
             return Ok();
-        }
-
-        private bool AnswerExists(int id)
-        {
-            return _context.Answers.Any(e => e.Id == id);
         }
 
         private int GetUserId()

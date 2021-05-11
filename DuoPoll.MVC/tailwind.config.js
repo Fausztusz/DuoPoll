@@ -6,7 +6,7 @@ module.exports = {
         './Resources/**/*.js',
         './Views/**/*.cshtml'
     ],
-    darkMode: 'media', // false or 'media' or 'class'
+    darkMode: 'class', // false or 'media' or 'class'
     theme: {
         fontFamily: {
             'display': ['Copse', 'Oswald', ...defaultTheme.fontFamily.sans],

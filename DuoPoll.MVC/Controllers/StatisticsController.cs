@@ -20,7 +20,7 @@ namespace DuoPoll.MVC.Controllers
     }
 
     [ApiController]
-    [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
+    [Route("api/[controller]")]
     public class StatisticsController : Controller
     {
         private readonly DuoPollDbContext _context;
@@ -38,21 +38,24 @@ namespace DuoPoll.MVC.Controllers
                 .Include(p => p.Answers)
                 .ThenInclude(a => a.Choices).FirstOrDefaultAsync();
 
-            var list = new List<PollResult>();
-            foreach (var pollAnswer in poll.Answers)
+            if (poll == null)
             {
-                list.Add(new PollResult
-                {
-                    Id = pollAnswer.Id,
-                    Title = pollAnswer.Title ?? "",
-                    Media = pollAnswer.Media ?? "",
-                    Wins = pollAnswer.Choices?.Count ?? 0,
-                    Loses = pollAnswer.Losses?.Count ?? 0,
-                    WinPercentage = Math.Round((double) (pollAnswer.Choices?.Count ?? 0)
-                        / (((pollAnswer.Choices?.Count ?? 1) == 0 ? 1 : pollAnswer.Choices?.Count ?? 1) +
-                           (pollAnswer.Losses?.Count ?? 0)) * 100, 1),
-                });
+                return NotFound();
             }
+
+            var list = poll.Answers.Select(pollAnswer => new PollResult
+            {
+                Id = pollAnswer.Id,
+                Title = pollAnswer.Title ?? "",
+                Media = pollAnswer.Media ?? "",
+                Wins = pollAnswer.Choices?.Count ?? 0,
+                Loses = pollAnswer.Losses?.Count ?? 0,
+                WinPercentage =
+                    Math.Round(
+                        (double) (pollAnswer.Choices?.Count ?? 0) /
+                        (((pollAnswer.Choices?.Count ?? 1) == 0 ? 1 : pollAnswer.Choices?.Count ?? 1) +
+                         (pollAnswer.Losses?.Count ?? 0)) * 100, 1),
+            }).ToList();
 
             return Json(new {Name = poll.Name, Answers = list.OrderByDescending(p => p.WinPercentage)});
         }

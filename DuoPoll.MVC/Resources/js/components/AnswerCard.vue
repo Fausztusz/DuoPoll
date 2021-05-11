@@ -31,7 +31,7 @@
         <div v-if="dropdown==='image'" style="height: 240px">
           <vue-dropzone ref="myVueDropzone" id="dropzone" style="display: flex; justify-content: center; height: 240px"
                         @vdropzone-success="successResponse" @vdropzone-error="errorResponse"
-                        @vdropzone-mounted="dropzoneMounted"
+                        @vdropzone-mounted="dropzoneMounted" @vdropzone-removed-file="removedFile"
                         :options="dropzoneOptions">
           </vue-dropzone>
         </div>
@@ -135,16 +135,23 @@ export default {
           })
 
     },
+
     dropzoneMounted() {
       let file = {size: 200, type: "image/png"};
       if (this.answer.Media)
         this.$refs.myVueDropzone.manuallyAddFile(file, this.answer.Media);
     },
+
+    removedFile() {
+      this.media = "";
+    },
+
     successResponse(file, response) {
       console.log(response);
       console.log(response.url);
       this.media = response.url
     },
+
     errorResponse(file, message, xhr) {
       this.animateBorder(["ring-red-800", "ring-red-700", "ring-red-600", "ring-red-500"])
     },
@@ -164,6 +171,7 @@ export default {
         }, 1000 / speed)
       }, 1000 / speed)
     },
+
     deleteAnswer() {
       if (this.id === null)
         return bus.$emit('delete-answer', {id: null, hash: this.answer.Hash})

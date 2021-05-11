@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using DuoPoll.Dal;
@@ -7,7 +6,6 @@ using DuoPoll.Dal.Dto;
 using DuoPoll.Dal.Entities;
 using DuoPoll.Dal.Service;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
@@ -18,12 +16,10 @@ namespace DuoPoll.MVC.Controllers
     [AutoValidateAntiforgeryToken]
     public class PollController : Controller
     {
-        private readonly DuoPollDbContext _dbContext;
         private readonly PollService _pollService;
 
-        public PollController(DuoPollDbContext dbContext, PollService pollService)
+        public PollController(PollService pollService)
         {
-            _dbContext = dbContext;
             _pollService = pollService;
         }
 
@@ -31,13 +27,7 @@ namespace DuoPoll.MVC.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            return View(await _dbContext.Polls
-                .Where(p => p.Public)
-                .Where(p => p.Status == Poll.StatusType.Open)
-                .Where(p => p.Answers.Count > 0)
-                .Include(p => p.Answers)
-                .Include(p => p.User)
-                .ToListAsync());
+            return View(await _pollService.Index());
         }
 
         // GET
@@ -50,9 +40,8 @@ namespace DuoPoll.MVC.Controllers
                 return NotFound();
             }
 
-            var poll = await _dbContext.Polls
-                .Include(p => p.User)
-                .FirstOrDefaultAsync(m => m.Url == url);
+            var poll = await _pollService.Details(url);
+
             if (poll == null)
             {
                 return NotFound();
@@ -81,9 +70,7 @@ namespace DuoPoll.MVC.Controllers
                 return NotFound();
             }
 
-            var poll = await _dbContext.Polls
-                .Include(p => p.Answers)
-                .FirstOrDefaultAsync(p => p.Url == url);
+            var poll = await _pollService.GetPollWithAnswers(url);
             if (poll == null)
             {
                 return NotFound();
@@ -157,26 +144,7 @@ namespace DuoPoll.MVC.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Statistics()
         {
-            var poll = await _dbContext.Polls
-                .Where(p => p.Answers.Count > 0)
-                .Where(p => p.Public)
-                .Where(p => p.Status != Poll.StatusType.Draft)
-                .Include(p => p.User)
-                .Include(p => p.Answers)
-                .ThenInclude(a => a.Choices)
-                .ToListAsync();
-
-            return View(poll);
-        }
-
-        private bool PollExists(int id)
-        {
-            return _dbContext.Polls.Any(e => e.Id == id);
-        }
-
-        private bool PollExists(string url)
-        {
-            return _dbContext.Polls.Any(e => e.Url == url);
+            return View(await _pollService.Statistics());
         }
     }
 }

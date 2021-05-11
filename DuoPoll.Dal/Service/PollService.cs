@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DuoPoll.Dal.Dto;
@@ -13,6 +14,36 @@ namespace DuoPoll.Dal.Service
         public PollService(DuoPollDbContext dbContext)
         {
             _dbContext = dbContext;
+        }
+
+        public async Task<List<Poll>> Index()
+        {
+            return await _dbContext.Polls
+                .Where(p => p.Public)
+                .Where(p => p.Status == Poll.StatusType.Open)
+                .Where(p => p.Answers.Count > 0)
+                .Include(p => p.Answers)
+                .Include(p => p.User)
+                .ToListAsync();
+        }
+
+        public async Task<Poll> Details(string url)
+        {
+            return await _dbContext.Polls
+                .Include(p => p.User)
+                .FirstOrDefaultAsync(m => m.Url == url);
+        }
+
+        // public async Task<Poll> GetPollWithoutIncludesAndStuffWithoutTrackingOfc(string url)
+        // {
+        // }
+
+        public async Task<Poll> GetPollWithAnswers(string url)
+        {
+            return await _dbContext.Polls
+                .AsNoTracking()
+                .Include(p => p.Answers)
+                .FirstOrDefaultAsync(m => m.Url == url);
         }
 
         public async Task<Poll> Create(PollHeader pollHeader)
@@ -35,6 +66,7 @@ namespace DuoPoll.Dal.Service
         public async Task<Poll> Update(PollHeader pollHeader)
         {
             var poll = await _dbContext.Polls
+                .Include(p => p.Answers)
                 .Where(p => p.Url == pollHeader.Url)
                 .FirstOrDefaultAsync();
 
@@ -52,6 +84,18 @@ namespace DuoPoll.Dal.Service
             await _dbContext.SaveChangesAsync();
 
             return poll;
+        }
+
+        public async Task<List<Poll>> Statistics()
+        {
+            return await _dbContext.Polls
+                .Where(p => p.Answers.Count > 0)
+                .Where(p => p.Public)
+                .Where(p => p.Status != Poll.StatusType.Draft)
+                .Include(p => p.User)
+                .Include(p => p.Answers)
+                .ThenInclude(a => a.Choices)
+                .ToListAsync();
         }
     }
 }

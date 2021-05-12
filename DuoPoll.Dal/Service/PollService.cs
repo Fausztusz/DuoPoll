@@ -48,6 +48,13 @@ namespace DuoPoll.Dal.Service
 
         public async Task<Poll> Create(PollHeader pollHeader)
         {
+            if (pollHeader.Open.CompareTo(pollHeader.Close) == 1)
+            {
+                var temp = pollHeader.Open;
+                pollHeader.Open = pollHeader.Close;
+                pollHeader.Close = temp;
+            }
+
             var poll = new Poll
             {
                 UserId = pollHeader.UserId,
@@ -65,6 +72,13 @@ namespace DuoPoll.Dal.Service
 
         public async Task<Poll> Update(PollHeader pollHeader)
         {
+            if (pollHeader.Open.CompareTo(pollHeader.Close) == 1)
+            {
+                var temp = pollHeader.Open;
+                pollHeader.Open = pollHeader.Close;
+                pollHeader.Close = temp;
+            }
+
             var poll = await _dbContext.Polls
                 .Include(p => p.Answers)
                 .Where(p => p.Url == pollHeader.Url)

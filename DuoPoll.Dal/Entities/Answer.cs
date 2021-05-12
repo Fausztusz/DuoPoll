@@ -10,13 +10,6 @@ namespace DuoPoll.Dal.Entities
 {
     public class Answer
     {
-        public Answer()
-        {
-            // Poll = new Poll();
-            // Choices = new HashSet<Choice>();
-            // Losses = new HashSet<Choice>();
-        }
-
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }

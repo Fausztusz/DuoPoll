@@ -32,10 +32,9 @@ const settings = {
             timepicker: true,
             inline: false,
             weekStart: 1,
-            dateFormat: 'Y-m-d H:m',
-            userFormat: 'Y-m-d H:m',
+            dateFormat: 'Y-m-d H:i',
+            userFormat: 'Y-m-d H:i',
             minDate: new Date(new Date().setHours(0, 0, 0, 0)),
-            initialTime: new Date().getHours().toString(),
             fixedClasses: {
                 navigator: 'flex',
                 navigatorViewButton: 'flex items-center',

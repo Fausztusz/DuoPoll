@@ -8,19 +8,12 @@ namespace DuoPoll.Dal.Entities
     [Index(nameof(Id), nameof(UserIdentity))]
     public class Choice
     {
-        public Choice()
-        {
-            // Answer = new Answer();
-            // User = new User();
-            // Loser = new Answer();
-        }
-
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        public int AnswerId { get; set; }
-        public int LoserId { get; set; }
+        [Required] public int AnswerId { get; set; }
+        [Required] public int LoserId { get; set; }
         [AllowNull] public string UserIdentity { get; set; }
 
         public virtual Answer Answer { get; set; }

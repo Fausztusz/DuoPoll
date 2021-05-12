@@ -125,7 +125,7 @@ namespace DuoPoll.MVC.Controllers
         {
             var poll = await _pollService.GetPollWithAnswers(answerHeader.Url);
 
-            if (id != answerHeader.Id || poll == null)
+            if (id != answerHeader.Id || poll == null || answerHeader.Title == "")
             {
                 return BadRequest();
             }
@@ -142,11 +142,16 @@ namespace DuoPoll.MVC.Controllers
         // POST: api/Answer
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Answer>> PostAnswer(AnswerHeader answerHeader)
+        public async Task<ActionResult<Answer>> PostAnswer([Bind("Title,Media,Url")] AnswerHeader answerHeader)
         {
             var poll = await _pollService.GetPollWithAnswers(answerHeader.Url);
 
-            if (poll == null || !CanEdit(poll))
+            if (poll == null || answerHeader.Title == "")
+            {
+                return BadRequest();
+            }
+
+            if (!CanEdit(poll))
             {
                 return Unauthorized();
             }

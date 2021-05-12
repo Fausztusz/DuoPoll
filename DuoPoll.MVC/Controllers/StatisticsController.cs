@@ -36,7 +36,8 @@ namespace DuoPoll.MVC.Controllers
             var poll = await _context.Polls
                 .Where(p => p.Url == url)
                 .Include(p => p.Answers)
-                .ThenInclude(a => a.Choices).FirstOrDefaultAsync();
+                .ThenInclude(a => a.Choices)
+                .FirstOrDefaultAsync();
 
             if (poll == null)
             {
@@ -57,7 +58,11 @@ namespace DuoPoll.MVC.Controllers
                          (pollAnswer.Losses?.Count ?? 0)) * 100, 1),
             }).ToList();
 
-            return Json(new {Name = poll.Name, Answers = list.OrderByDescending(p => p.WinPercentage)});
+            return Json(new
+            {
+                Name = poll.Name,
+                Answers = list.OrderByDescending(p => p.WinPercentage)
+            });
         }
     }
 }
